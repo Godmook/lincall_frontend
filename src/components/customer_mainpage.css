@@ -1,0 +1,314 @@
+* {
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Noto Sans KR";
+}
+@font-face {
+    font-family: "Noto Sans KR";
+    src: url("../fonts/NotoSansKR-Regular.otf") format('truetype') font-weight-normal, url("../fonts/NotoSansCJKkr-Thin.otf") format('truetype') font-weight-lighter, url("../fonts/NotoSansKR-Bold.otf") format('truetype') font-weight-bold;
+}
+.passwordInput{
+width:170%;
+height: 50%;
+background: #FFFFFF;
+box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.25);
+border-radius: 12px;
+border: 0;
+}
+.page {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.75em;
+}
+.loading_margin{
+    width: 100%;
+    height: 80%;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top:4%;
+    flex-direction: column;
+    display: flex;
+}
+.image_centerpos{
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+.customer_cover {
+    background-color: white;
+    width: 90%;
+    height: 80%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background-color: transparent;
+}
+.mypageStyle{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width:90%;
+    height:80%;
+    margin-top: 4%;
+    font-size:350%;
+}
+.mypagePart1{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.row_align{
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: center;
+    align-items: center;  
+    height:15%;
+    width:100%;
+}
+input:focus {
+    outline-color: rgb(32, 177, 255);
+}
+.mainStyle {
+    font-size: 480%;
+    font-weight: lighter;
+    font-style: normal;
+    color: #359DD9;
+    line-height: 200%;
+}
+.regularFontStyle {
+    font-size: 300%;
+    font-weight: bold;
+    font-style: normal;
+    color: black;
+}
+.aaFontStyle{
+    font-size:200%;
+    font-weight: lighter;
+    color:black;
+}
+.bbFontStyle {
+    font-size: 230%;
+    font-weight: bold;
+    font-style: normal;
+    color: black;
+}
+.ccFontStyle {
+    font-size: 80%;
+    font-weight: bold;
+    font-style: normal;
+    color: black;
+    margin-top: 3%;
+}
+.eeFontStyle {
+    font-size:70%;
+    font-weight: bold;
+    font-style: normal;
+    color: black;
+    margin-top: 3%;
+    width:70%;
+}
+.ddFontStyle {
+    font-size: 80%;
+    font-weight: lighter;
+    font-style: normal;
+    color: black;
+}
+.leftalign_box{
+    align-items: flex-start;
+}
+.buttonFontStyle {
+    font-size: 200%;
+    font-weight: lighter;
+    font-style: normal;
+    color: black;
+    border: 0;
+    outline: 0;
+    background-color: transparent;
+    text-align: center;
+    border-radius: 60px;
+    height: 20%;
+    transition: 0.5s;
+}
+.loadingFontStyle {
+    font-size: 260%;
+    font-weight: lighter;
+    font-style: normal;
+    color: black;
+    border: 0;
+    outline: 0;
+    background-color: transparent;
+    text-align: center;
+    height: 20%;
+    margin-top:4%
+}
+.buttonFontStyle2 {
+    font-size: 200%;
+    font-weight: normal;
+    font-style: normal;
+    color: black;
+    border: 0;
+    outline: 0;
+    background-color: transparent;
+    text-align: center;
+    border-radius: 60px;
+    height: 20%;
+    background: rgba(53, 157, 217, 0.54);
+    transition: 0.5s;
+}
+.modal {
+    margin-top: 20px;
+    padding: 20px;
+    background-color:  #61dafb;
+    text-align: left;
+}
+.timeFontStyle {
+    font-size: 250%;
+    font-weight: lighter;
+    font-style: normal;
+    color: black;
+}
+.smallFontStyle {
+    font-size: 200%;
+    font-weight: lighter;
+    font-style: normal;
+    color: black;
+}
+.currentStateStyle {
+    font-size: 230%;
+    font-weight: normal;
+    font-style: normal;
+    color: #1C8C00;
+    text-align: center;
+}
+.grouping2 {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    background-color: transparent;
+}
+.button_grouping {
+    margin-top: 18%;
+    height: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    border:0;
+    width:100%;
+}
+.left_bar {
+    display: flex;
+    width: 14%;
+    height: 100%;
+    margin-right: 4%;
+    background: #FFFFFF;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+    border-radius: 2em;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+.grid::-webkit-scrollbar{
+    height: 4%;
+}
+.grid::-webkit-scrollbar-thumb{
+    height: 30%;
+    border-radius: 10px;
+    background: #717171;;
+}
+.grid::-webkit-scrollbar-track{
+    background: #D9D9D9;
+    border-radius: 10px;
+}
+.grid {
+    margin-top: 4%;
+    width: 90%;
+    height: 75%;
+    display: grid;
+    grid-template-columns: 2fr 2fr;
+    align-items: center;
+    grid-auto-flow:row;
+    overflow: scroll;
+    grid-auto-rows: 50%;
+  }
+.center_box {
+    display: flex;
+    width: 50%;
+    height: 100%;
+    background: #FFFFFF;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+    border-radius: 2em;
+    justify-content: flex-start;
+    flex-direction: column;
+    align-items: center;
+}
+.center_gray_box {
+    width: 85%;
+    height: 10%;
+    margin-top: 4%;
+    background: #D9D9D9;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+    border-radius: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.left_bar_gray_box {
+    width: 90%;
+    height: 8%;
+    background: #D9D9D9;
+    border-radius: 60px;
+    margin-top: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.blue_bar {
+    width: 100%;
+    height: 25%;
+    background: rgba(53, 157, 217, 0.54);
+    border-radius: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.main_white_box {
+    width: 80%;
+    height: 80%;
+    margin-left: 10%;
+    background: #FFFFFF;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    transition: 0.5s;
+    
+}
+.main_white_box:hover {
+    transform: scale(1.1);
+}
+.red_bar{
+    margin-top:4%;
+    background-color: #FFBEBE;
+    border-radius: 60px;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    height: 8%;
+    width:45%;
+    font-size:250%;
+    font-weight: bold;
+    transition: 0.5s;
+}
+.red_bar:hover{
+    transform: scale(1.1);
+}
