@@ -3,7 +3,28 @@ import {useNavigate} from "react-router-dom";
 import "./counselor_mainpage.css";
 import axios from "axios";
 import {useLocation} from "react-router-dom";
+import URLsetting from "../Setting/URLsetting";
+function Mode1GrayBox ({start,end,time,id,people}){
+    return (
+        <div className="mode1_grid_gray_box">
+            {start}
+            {people}
+        </div>
+    )
+}
 const Mode1 = () => {
+    const [Mode1_data,setMode1Data]=useState([]);
+    useEffect(()=> {
+        axios
+        .get(URLsetting.LOCAL_API_URL+"consulting/list", {
+            params: {
+                clientID: "cmoh4135"
+            }
+        })
+        .then((response) => {
+            setMode1Data(response.data);
+        })
+    },[])
     return (
         <> < div className = "center_top" > <div className="text_box">
             <p className="center_top_text" id="todayCallCount">오늘 상담 건수
@@ -21,8 +42,17 @@ const Mode1 = () => {
     <div className="center_bottom">
         <div className="call_record_list_box">
             <p className="bigText">상담 내역</p>
-            <div className="viewCallRecordList">
-                <div className="recordList" id="record1">2022.09.29 16:13 5분 고객 : 정현진</div>
+            <div className="mode1_grid">
+            {
+                        Mode1_data.map((tmp) => (
+                            <Mode1GrayBox
+                                start={tmp.start}
+                                end={tmp.end}
+                                time={tmp.time}
+                                id={tmp.id}
+                                people={tmp.counselorName}/>
+                        ))
+                    }
             </div>
         </div>
         <div class='v-line'></div>
@@ -58,7 +88,7 @@ function MakeWaitingList ({room,client,time}){
 const Mode2 = () =>{
     const [room_number, setRoomNumber] = useState([]);
     useEffect(()=> {
-        axios.get("http://localhost:8080/consulting/room-list")
+        axios.get(URLsetting.LOCAL_API_URL+"consulting/room-list")
         .then((response)=> {
             setRoomNumber(response.data);
         })

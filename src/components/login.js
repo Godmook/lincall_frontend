@@ -4,6 +4,7 @@ import "./login.css"
 import axios from 'axios'
 import waves from "../assets/wave.png";
 import bg from "../assets/bg.svg";
+import URLsetting from "../Setting/URLsetting";
 import {
     faUser,
     faLock,
@@ -90,7 +91,7 @@ const Logins = () => {
         };
         if (isClient) {
             axios
-                .post("http://localhost:8080/user/client/logIn", JSON.stringify(body), {
+                .post(URLsetting.LOCAL_API_URL+"user/client/logIn", JSON.stringify(body), {
                     headers: {
                         "Content-Type": 'application/json'
                     }
@@ -106,7 +107,7 @@ const Logins = () => {
         } else {
             console.log("상담사");
             axios
-                .post("http://localhost:8080/user/counselor/logIn", JSON.stringify(body), {
+                .post(URLsetting.LOCAL_API_URL+"user/counselor/logIn", JSON.stringify(body), {
                     headers: {
                         "Content-Type": 'application/json'
                     }
@@ -187,7 +188,7 @@ const Logins = () => {
             .getElementById('email_test')
             .disabled = true;
         axios
-            .get("http://localhost:8080/user/email-auth", {
+            .get(URLsetting.LOCAL_API_URL+"user/email-auth", {
                 params: {
                     email: EMAIL
                 }
@@ -232,7 +233,7 @@ const Logins = () => {
         } else {
             if(whichUser.current){
             axios
-                .get("http://localhost:8080/user/counselor/id-check", {
+                .get(URLsetting.LOCAL_API_URL+"user/counselor/id-check", {
                     params: {
                         id: ReadID
                     }
@@ -263,7 +264,7 @@ const Logins = () => {
             }
             else{
                 axios
-                .get("http://localhost:8080/user/client/id-check", {
+                .get(URLsetting.LOCAL_API_URL+"user/client/id-check", {
                     params: {
                         id: ReadID
                     }
@@ -442,7 +443,7 @@ const Logins = () => {
                         };
                         if(whichUser.current){
                         axios
-                            .post("http://localhost:8080/user/counselor/signUp", JSON.stringify(body), {
+                            .post(URLsetting.LOCAL_API_URL+"user/counselor/signUp", JSON.stringify(body), {
                                 headers: {
                                     "Content-Type": 'application/json'
                                 }
@@ -453,7 +454,7 @@ const Logins = () => {
                         }
                         else{
                             axios
-                            .post("http://localhost:8080/user/client/signUp", JSON.stringify(body), {
+                            .post(URLsetting.LOCAL_API_URL+"user/client/signUp", JSON.stringify(body), {
                                 headers: {
                                     "Content-Type": 'application/json'
                                 }

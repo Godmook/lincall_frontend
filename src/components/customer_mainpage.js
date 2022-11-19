@@ -4,6 +4,7 @@ import "./customer_mainpage.css";
 import axios from "axios";
 import {useLocation} from "react-router-dom";
 import Spinner from "../assets/spinner5.gif";
+import URLsetting from "../Setting/URLsetting";
 const TimeStamp = () => {
     const [current_Time, setTime] = useState("");
     useEffect(() => {
@@ -132,7 +133,7 @@ const CustomerMainPage = () => {
                     parseInt(hour3) + "시간" + parseInt(minute3) + "분 " + parseInt(sec3) + "초"
                 );
             }
-        })
+        },[])
         return (
             <div
                 className="main_white_box"
@@ -188,6 +189,7 @@ const CustomerMainPage = () => {
         )
     }
     const Loading = () => {
+        const room_number = useRef(0);
         const [wait_time, setWaitTime] = useState(0);
         useEffect(() => {
             const myInterval = setInterval(() => {
@@ -202,6 +204,12 @@ const CustomerMainPage = () => {
                 return wait_time % 60 + '초';
             }
         }
+        useEffect(()=> {
+            axios.get(URLsetting.LOCAL_API_URL+"consulting/create")
+            .then((response)=>{
+                room_number.current=parseInt(response.data);
+            })
+        },[])
         return (
             <div className="loading_margin">
                 <div className="image_centerpos">
@@ -230,7 +238,7 @@ const CustomerMainPage = () => {
     }
     useEffect(() => {
         axios
-            .get("http://localhost:8080/consulting/list", {
+            .get(URLsetting.LOCAL_API_URL+"consulting/list", {
                 params: {
                     clientID: "cmoh4135"
                 }
