@@ -7,7 +7,7 @@ function App() {
   return (
     <div className="page">
     <Routes>
-      <Route path='*' element={<Login/>}/>
+      <Route path='*' element={<CounselorMainPage/>}/>
       <Route path='/customermain' element={<CustomerMainPage/>}/>
       <Route path='/counselormain' element={<CounselorMainPage/>}/>
       <Route path='/test' element={<Test/>}/>
@@ -17,7 +17,6 @@ function App() {
 }
 
 export default App;
-
 
 
 
