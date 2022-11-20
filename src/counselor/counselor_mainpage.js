@@ -66,6 +66,7 @@ const Mode1 = () => {
 </>
     )
 }
+
 function CalculateWaitingTime({ab}){
     const [tmp_time,setTmptime] = useState("");
     useEffect(()=> {
@@ -85,7 +86,13 @@ function MakeWaitingList ({room,client,time}){
         </div>
     )
 }
+const callingPage = () => {
+    return(
+        <div>상담 진행 중 화면</div>
+    )
+}
 const Mode2 = () =>{
+   
     const [room_number, setRoomNumber] = useState([]);
     useEffect(()=> {
         axios.get(URLsetting.LOCAL_API_URL+"consulting/room-list")
@@ -93,18 +100,49 @@ const Mode2 = () =>{
             setRoomNumber(response.data);
         })
     },[])
+    /*
     return (
         <>
         <div className="mode2_top">
             대기중인 고객
         </div>
         <div className="mode2_grid">
+            <MakeWaitingList/>
         </div>
         </>
+    )*/
+    return(
+        <div className="calling_center">
+            <div className="calling_center_top">
+                <div className="calling_center_top_left">
+                    <div className="left1"><p className="left1_text">고객 감정</p></div>
+                    <div className="left2"><p className="left2_text">목소리 크기</p></div>
+                    <div className="left3"><p className="left3_text">말 빠르기</p></div>
+                </div>
+                <div className="calling_center_top_right">
+                    <p className="right1">Q. 주문 취소는 어떻게 해야 하나요?</p>
+                    <div className="right2">
+                        1. 가게에서 주문을 접수하기 전<br/>
+                        App 에서 직접 취소할 수 있습니다.<br/>
+                        -경로 : 주문내역 에서 '취소할 주문' 클릭 후 '주문 취소' 버튼 클릭<br/>
+                    </div>
+                </div>
+            </div>
+            <div className="calling_center_bottom">
+                <div className="calling_center_bottom_left">
+                    <div className="find_bar"></div>
+                    <div className="find_button"></div>
+                </div>
+                <div className="calling_center_bottom_right">
+                    <div className="muteButton"></div>
+                    <div className="changeEmotion"></div>
+                </div>
+            </div>
+        </div> 
     )
 }
 const CounselorMainPage = () => {
-    const [current_mode, setMode] = useState(1);
+    const [current_mode, setMode] = useState(2);
     const leftbar_backgroundcolor = (number) => {
         for (var i = 1; i < 6; i++) {
             var tmp = "select" + i;

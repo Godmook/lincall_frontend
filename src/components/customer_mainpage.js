@@ -6,8 +6,8 @@ import {useLocation} from "react-router-dom";
 import Spinner from "../assets/spinner5.gif";
 import URLsetting from "../Setting/URLsetting";
 import SockJS from "sockjs-client";
-import Connect from "./SocketConnect";
 import Stomp from "webstomp-client";
+
 const TimeStamp = () => {
     const [current_Time, setTime] = useState("");
     useEffect(() => {
@@ -192,16 +192,7 @@ const CustomerMainPage = () => {
         )
     }
     const Loading = () => {
-        function Connect({roomID}){
-            var socket= new SockJS("//localhost:8080/ws");
-            var stomp = Stomp.over(socket);
-            stomp.connect ( {}, function(frame){
-                console.log("connected"+frame);
-                stomp.subscribe("/sub/room"+roomID,function(msg){
-                    console.log(msg);
-                })
-            })
-        }
+        const [stream,setStream]=useState(null);
         const room_number = useRef(0);
         const [wait_time, setWaitTime] = useState(0);
         useEffect(() => {
@@ -211,31 +202,50 @@ const CustomerMainPage = () => {
             return() => clearInterval(myInterval);
         }, []);
         useEffect(()=> {
+            function handlerIceCandidate (e){
+                if(e.candidate) pc.addIceCandidate(e.candidate);
+                if(e.candidate) console.log(e.candidate);
+            }
+            const pc= new RTCPeerConnection(URLsetting.STUN_CONFIG)
+            navigator.mediaDevices.getUserMedia({video:false, audio:true})
+            .then((currentStream)=>{
+                setStream(currentStream);
+                pc.addTrack(stream.getTrack());
+            })
             axios.get(URLsetting.LOCAL_API_URL+"consulting/create")
             .then((response)=>{
                 console.log(response.data);
                 room_number.current=parseInt(response.data);
                 var socket= new SockJS("//localhost:8080/ws");
                 var stomp = Stomp.over(socket);
+                pc.onicecandidate=handlerIceCandidate;
                 stomp.connect ( {}, function(frame){
                     stomp.subscribe("/sub/room/"+response.data,function(msg){
                         if((msg.body).includes('join')){
                             var tmp2=(msg.body).substring(0,(msg.body).length-4);
                             if(tmp2!=userName){
-                                stomp.send("/pub/data",JSON.stringify({type:'offer', sender:userName, channelId:response.data, data:"client offer"}));
+                                pc.createOffer()
+                                .then((offer)=> pc.setLocalDescription(offer))
+                                .then(()=>{
+                                    stomp.send("/sub/room/"+response.data+"/pub/data",JSON.stringify({type:'offer', sender:userName, channelId:response.data, data:pc.localDescription}));
+                                })
                             }
                         }
                         else{
                         var tmp=JSON.parse(msg.body);
                         if(tmp.type=="answer"){
+                            var sdp=JSON.parse(tmp.data);
+                            pc.setRemoteDescription(sdp.sdp);
                             stomp.send("/pub/data",JSON.stringify({type:'ice', sender:userName, channelId:response.data, data:"client ice"}));
                         }
                         else if(tmp.type=="ice"){
+                            console.log(pc.localDescription);
+                            console.log(pc.currentRemoteDescription);
                             stomp.send("/pub/success");
                         }
                     }
                     })
-                    stomp.send("/pub/join",JSON.stringify({type:'client', sender:userName, channelId:response.data, data:"보내봄"}));
+                    stomp.send("/pub/join",JSON.stringify({type:'client', sender:userName, channelId:response.data, data:"dkdk"}));
                 })
             })
         },[])
