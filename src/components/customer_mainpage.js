@@ -218,9 +218,22 @@ const CustomerMainPage = () => {
                 var socket= new SockJS("//localhost:8080/ws");
                 var stomp = Stomp.over(socket);
                 stomp.connect ( {}, function(frame){
-                    console.log("connected"+frame);
                     stomp.subscribe("/sub/room/"+response.data,function(msg){
-                        console.log(msg);
+                        if((msg.body).includes('join')){
+                            var tmp2=(msg.body).substring(0,(msg.body).length-4);
+                            if(tmp2!=userName){
+                                stomp.send("/pub/data",JSON.stringify({type:'offer', sender:userName, channelId:response.data, data:"client offer"}));
+                            }
+                        }
+                        else{
+                        var tmp=JSON.parse(msg.body);
+                        if(tmp.type=="answer"){
+                            stomp.send("/pub/data",JSON.stringify({type:'ice', sender:userName, channelId:response.data, data:"client ice"}));
+                        }
+                        else if(tmp.type=="ice"){
+                            stomp.send("/pub/success");
+                        }
+                    }
                     })
                     stomp.send("/pub/join",JSON.stringify({type:'client', sender:userName, channelId:response.data, data:"보내봄"}));
                 })
