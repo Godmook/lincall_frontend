@@ -2,47 +2,16 @@ import Peer from "simple-peer";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import axios from "axios";
-const Recording = () => {
-    const isRecording = false;
-    const mediaRecorder = null;
-    const audioArray = [];
-
-    $btn.onclick = async function (event) {
-        if (isRecording) {
-            const mediaStream = await navigator
-                .mediaDevices
-                .getUserMedia({audio: true});
-            mediaRecorder = new MediaRecorder(mediaStream);
-
-            mediaRecorder.ondataavailable = (event) => {
-                audioArray.push(event.data);
-            }
-            mediaRecorder.onstop = (event) => {
-                const blob = new Blob(audioArray,{"type": "audio/ogg codecs=opus"});
-                audioArray.splice(0);
-
-                const blobURL=window.URL.createObjectURL(blob);
-
-                $audioEl.src = blobURL;
-                $audioEl.play();
-            }
-            
-            mediaRecorder.start();
-            isRecording= true;
-        }
-        else{
-            mediaRecorder.stop();
-            isRecording(false);
-        }
-    }
-}
-const connect = () => {
-    const TestURL = "http://localhost:8080"
-    var socket = new SockJS(TestURL);
+function Connect({roomID}){
+    var socket= new SockJS("ws://localhost:8080/ws");
     stomp = Stomp.over(socket);
-    stomp.connect({}, () => {
-        stomp.subscribe("/join", (data) => {
-            data = JSON.parse(data.body);
+
+    stomp.connect ( {}, function(frame){
+        console.log("connected"+frame);
+        stomp.subscribe("/sub/room"+roomID,function(msg){
+            console.log(msg);
         })
     })
 }
+
+export default Connect

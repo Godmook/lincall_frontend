@@ -98,7 +98,7 @@ const Logins = () => {
                 })
                 .then((response) => {
                     if (response.data) {
-                        userID.current = response.data;
+                        userID.current = response.data.id;
                         goToCustomerMain();
                     }
                     if (!response.data) {
@@ -441,6 +441,7 @@ const Logins = () => {
                             email: Email,
                             name: Name
                         };
+                        console.log(whichUser.current);
                         if(whichUser.current){
                         axios
                             .post(URLsetting.LOCAL_API_URL+"user/counselor/signUp", JSON.stringify(body), {

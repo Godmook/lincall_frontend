@@ -5,6 +5,9 @@ import axios from "axios";
 import {useLocation} from "react-router-dom";
 import Spinner from "../assets/spinner5.gif";
 import URLsetting from "../Setting/URLsetting";
+import SockJS from "sockjs-client";
+import Connect from "./SocketConnect";
+import Stomp from "webstomp-client";
 const TimeStamp = () => {
     const [current_Time, setTime] = useState("");
     useEffect(() => {
@@ -189,6 +192,16 @@ const CustomerMainPage = () => {
         )
     }
     const Loading = () => {
+        function Connect({roomID}){
+            var socket= new SockJS("//localhost:8080/ws");
+            var stomp = Stomp.over(socket);
+            stomp.connect ( {}, function(frame){
+                console.log("connected"+frame);
+                stomp.subscribe("/sub/room"+roomID,function(msg){
+                    console.log(msg);
+                })
+            })
+        }
         const room_number = useRef(0);
         const [wait_time, setWaitTime] = useState(0);
         useEffect(() => {
@@ -197,6 +210,22 @@ const CustomerMainPage = () => {
             }, 1000);
             return() => clearInterval(myInterval);
         }, []);
+        useEffect(()=> {
+            axios.get(URLsetting.LOCAL_API_URL+"consulting/create")
+            .then((response)=>{
+                console.log(response.data);
+                room_number.current=parseInt(response.data);
+                var socket= new SockJS("//localhost:8080/ws");
+                var stomp = Stomp.over(socket);
+                stomp.connect ( {}, function(frame){
+                    console.log("connected"+frame);
+                    stomp.subscribe("/sub/room/"+response.data,function(msg){
+                        console.log(msg);
+                    })
+                    stomp.send("/pub/join",JSON.stringify({type:'client', sender:userName, channelId:response.data, data:"보내봄"}));
+                })
+            })
+        },[])
         const CalculateTime = () => {
             if (wait_time >= 60) {
                 return parseInt(wait_time / 60) + '분 ' + wait_time % 60 + '초';
@@ -204,12 +233,11 @@ const CustomerMainPage = () => {
                 return wait_time % 60 + '초';
             }
         }
-        useEffect(()=> {
-            axios.get(URLsetting.LOCAL_API_URL+"consulting/create")
-            .then((response)=>{
-                room_number.current=parseInt(response.data);
+        function WebSocketInit (){
+            document.addEventListener("DOMContentLoaded", function(){
+                WebSocket.init();
             })
-        },[])
+        }
         return (
             <div className="loading_margin">
                 <div className="image_centerpos">
@@ -224,6 +252,7 @@ const CustomerMainPage = () => {
                 <div className="red_bar" onClick={fieldSetAable}>
                     상담 종료하기
                 </div>
+                <WebSocketInit/>
             </div>
         )
     }
@@ -238,7 +267,7 @@ const CustomerMainPage = () => {
     }
     useEffect(() => {
         axios
-            .get(URLsetting.LOCAL_API_URL+"consulting/list", {
+            .get(URLsetting.LOCAL_API_URL+"consulting/records", {
                 params: {
                     clientID: "cmoh4135"
                 }
