@@ -239,12 +239,14 @@
     line-height: 100%;
     margin-bottom: 25px;
 }
-hr{
+.line{
     margin-top: 10px;
     width: 100%;
-    height: 3px;
-    background-color: gray;
-    color: gray;
+    height: 5px;
+    background-color: lightgray;
+    border-left : solid;
+    color: lightgray;
+    border-radius: 2em;
 }
 .center_bottom{
     position: relative;
@@ -256,7 +258,8 @@ hr{
 }
 .v-line {
     border-left : solid;
-    color: gray;
+    color: lightgray;
+    border-radius: 2em;
     height : 100%;
 }
 .call_record_list_box{
@@ -312,6 +315,7 @@ hr{
 }
 .logout{
     background-color: transparent;
+    border-color: transparent;
 }
 .calling_center{
     display: flex;
@@ -508,7 +512,7 @@ body{
 .chatting{
     width: 95%;
     height: 90%;
-    background-color: rgb(141, 148, 141);
+    background-color: rgb(210, 255, 210);
     margin: 15px;
 }
 .buttonMame{
@@ -555,4 +559,157 @@ body{
 
 .toggle-switch.active .toggle-knob {
     margin-left: 24px;
+}
+
+.after_calling_center{
+    display: flex;
+    width: 97%;
+    height: 97%;
+    justify-content: space-around;
+    margin: 20px;
+    flex-direction: column;
+}
+.positive_keyword{
+    display: flex;
+    width: 47%;
+    height: 100%;
+    text-align: center;
+    flex-direction: column;
+    font-weight: bold;
+    color: green;
+}
+.negative_keyword{
+    display: flex;
+    width: 47%;
+    height: 100%;
+    text-align: center;
+    flex-direction: column;
+    font-weight: bold;
+    color: red;
+}
+.after_calling_keywords{
+    display: flex;
+    width:100%;
+    height: 100%;
+    justify-content: space-around;
+    flex-direction: row;
+    background: #FFFFFF;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+    border-radius: 2em;
+    padding: 15px;
+}
+.after_calling_center_top{
+    display: flex;
+    width: 100%;
+    height: 35%;
+    justify-content: center;
+    flex-direction: row;
+    padding: 15px;
+}
+
+.after_calling_center_bottom{
+    display: flex;
+    width: 100%;
+    height: 60%;
+    justify-content: space-around;
+}
+.after_calling_center_bottom_left{
+    display: flex;
+    width: 65%;
+    height: 100%;
+    background: #FFFFFF;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+    border-radius: 2em;
+    flex-direction: column;
+    align-items:flex-start;
+    justify-content: space-start;
+    padding: 15px;
+}
+.after_search_box{
+    position: flex;
+    height: 10%;
+    background-color: #fff;
+    border: 1px solid #8dd0f7;
+    border-radius: 2em;
+    transition: 0.4s;
+    width: 100%;
+    padding-left: 15px;
+}
+.after_search_box:hover{
+    box-shadow: 0px 0px .5px 1px #8dd0f7;
+}
+.after_search_txt{
+    margin-top: 3px;
+    display: flex;
+    padding: 0;
+    width: 100%;
+    border:none;
+    background: none;
+    outline: none;
+    float: left;
+    font-size: 1rem;
+    line-height: 30px;
+    transition: .4s;
+}
+.after_calling_center_bottom_right{
+    display: flex;
+    width: 30%;
+    height: 100%;
+    background: #FFFFFF;
+    border-radius: 2em;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+.after_changeEmotion{
+    display: flex;
+    width: 100%;
+    height: 97%;
+    background: #FFFFFF;
+    border-radius: 1em;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+}
+.after_calling_center_bars{
+    display: flex;
+    width: 100%;
+    height: 5%;
+    background: #FFFFFF;
+    border-radius: 1em;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+.after_calling_go_back{
+    display: flex;
+    width:6%;
+    height: 100%;
+    background: lightgray;  
+    border-radius: 5em;
+    align-items: center;
+    justify-content: space-around;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+    border-color: transparent;
+}
+.after_calling_go_back:hover{
+    transform: scale(1.05);
+}
+.after_calling_info_bar{
+    display: flex;
+    width:90%;
+    height: 100%;
+    background: rgb(222, 242, 248);
+    border-radius: 2em;
+    align-items: center;
+    justify-content: space-around;
+}
+.after_calling_info_text{
+    font-size: 150%;
+    font-weight: bold;
+}
+img{
+    width: 100%;
+    height: 100%;
 }

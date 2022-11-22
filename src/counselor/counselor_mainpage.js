@@ -38,7 +38,7 @@ const Mode1 = () => {
                 명</p>
         </div>
     </div>
-    <hr></hr>
+    <div className="line"></div>
     <div className="center_bottom">
         <div className="call_record_list_box">
             <p className="bigText">상담 내역</p>
@@ -86,20 +86,23 @@ function MakeWaitingList ({room,client,time}){
         </div>
     )
 }
-const callingPage = () => {
-    return(
-        <div>상담 진행 중 화면</div>
-    )
+function MakingEmotionChangeSentence (){
+    return;
 }
 const Mode2 = () =>{
-   
+    const [isActive,setActive]=useState(true);
     const [room_number, setRoomNumber] = useState([]);
+    
     useEffect(()=> {
         axios.get(URLsetting.LOCAL_API_URL+"consulting/room-list")
         .then((response)=> {
             setRoomNumber(response.data);
         })
     },[])
+    const toggleClass = () => {
+        var toggler = document.querySelector('.toggle-switch');
+        toggler.classList.toggle('active');
+    }
     /*
     return (
         <>
@@ -111,10 +114,7 @@ const Mode2 = () =>{
         </div>
         </>
     )*/
-    var toggler = document.querySelector('.toggle-switch');
-    toggler.onclick = function(){
-        toggler.classList.toggle('active');
-    }
+    /*
     return(
         <div className="calling_center">
             <div className="calling_center_top">
@@ -138,8 +138,8 @@ const Mode2 = () =>{
             </div>
             <div className="calling_center_bottom">
                 <div className="calling_center_bottom_left">
-                    <div class="search_box">
-                        <input type="text" class="search_txt" name=""placeholder="검색할 것을 입력하세요 !"></input>
+                    <div className="search_box">
+                        <input type="text" className="search_txt" name=""placeholder="검색할 것을 입력하세요 !"></input>
                     </div>
                     <div className="chatting">
                             
@@ -148,8 +148,8 @@ const Mode2 = () =>{
                 <div className="calling_center_bottom_right">
                     <div className="mute">
                         <p className="buttonMame">고객 음성 차단</p>
-                        <span class="toggle-switch">
-                            <span class="toggle-knob"></span>
+                        <span className="toggle-switch" onClick={toggleClass}>
+                            <span className="toggle-knob"></span>
                         </span>
                     </div>
                     <div className="changeEmotion"></div>
@@ -157,6 +157,39 @@ const Mode2 = () =>{
             </div>
         </div> 
     )
+    */
+   return(
+    <div className="after_calling_center">
+        <div className="after_calling_center_bars">
+            <button className="after_calling_go_back">back</button>
+            <div className="after_calling_info_bar">
+                <p className="after_calling_info_text">상담 일시 : 2022년 09월 29일 19:07:06 30분</p>
+            </div>
+        </div>
+        <div className="after_calling_center_top">
+            <div className="after_calling_keywords">
+                <div className="positive_keyword">긍정 키워드
+                    <img src="https://thumbs.dreamstime.com/b/design-wordcloud-15580394.jpg" alt="My Image"></img>
+                </div>
+                <div class='v-line'></div>
+                <div className="negative_keyword">부정 키워드
+                    <img src="https://t1.daumcdn.net/cfile/tistory/99D89D3F5A4654AF13" alt="My Image"></img>
+                </div>
+            </div>
+        </div>
+        <div className="after_calling_center_bottom">
+            <div className="after_calling_center_bottom_left">
+                <div className="after_search_box">
+                        <input type="text" className="after_search_txt" name=""placeholder="검색할 것을 입력하세요 !"></input>
+                    </div>
+                    <div className="chatting"></div>
+                </div>
+                <div className="after_calling_center_bottom_right">
+                    <div className="after_changeEmotion"></div>
+                </div>
+            </div>
+    </div> 
+   )
 }
 const CounselorMainPage = () => {
     const [current_mode, setMode] = useState(2);
