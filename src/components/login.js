@@ -569,7 +569,7 @@ const Logins = () => {
         )
     }
     return (
-        <div className="body">
+        <div className="my_body">
             <img className="wave" src={waves}/>
             <div className="container">
                 <div className="img">

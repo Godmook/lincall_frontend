@@ -4,8 +4,23 @@ export default Object.freeze({
     REAL_API_URL:"",
 
     STUN_CONFIG :{
-        'iceServers':[
-            {"url":"stun:stun.l.google.com:19302"},
+        'iceServers': [
+            {
+                "urls": "stun:stun.l.google.com:19302"
+            },
+            {
+                "urls": "turn:211.202.222.162:8080",
+                'credential' : '1234',
+                'username' : 'admin'
+            },
+            {
+                "urls": "stun1:stun.l.google.com:19302"
+            },
         ]
     },
+
+    MEDIACONSTRAINTS : {
+        'OfferToReceiveAudio': true,
+        'OfferToReceiveVideo': true
+    }
 })

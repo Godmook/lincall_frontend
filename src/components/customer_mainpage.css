@@ -249,6 +249,18 @@ input:focus {
     flex-direction: column;
     align-items: center;
 }
+.center_inner_box {
+    display: flex;
+    margin-top: 5%;
+    width: 85%;
+    height: 75%;
+    background: #FFFFFF;
+    box-shadow: 0 0 15px rgba(53, 157, 217, 0.54);
+    border-radius: 2em;
+    justify-content: flex-start;
+    flex-direction: column;
+    align-items: center;
+}
 .center_gray_box {
     width: 85%;
     height: 10%;

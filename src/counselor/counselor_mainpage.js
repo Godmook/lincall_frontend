@@ -169,11 +169,11 @@ const Mode2 = () =>{
         <div className="after_calling_center_top">
             <div className="after_calling_keywords">
                 <div className="positive_keyword">긍정 키워드
-                    <img src="https://thumbs.dreamstime.com/b/design-wordcloud-15580394.jpg" alt="My Image"></img>
+                    <img src="https://thumbs.dreamstime.com/b/design-wordcloud-15580394.jpg" alt="My Image" className="wordcloud_img"></img>
                 </div>
                 <div class='v-line'></div>
                 <div className="negative_keyword">부정 키워드
-                    <img src="https://t1.daumcdn.net/cfile/tistory/99D89D3F5A4654AF13" alt="My Image"></img>
+                    <img src="https://t1.daumcdn.net/cfile/tistory/99D89D3F5A4654AF13" alt="My Image"className="wordcloud_img"></img>
                 </div>
             </div>
         </div>

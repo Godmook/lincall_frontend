@@ -1,13 +1,13 @@
-*{
-	padding: 0;
-	margin: 0;
-	box-sizing: border-box;
+* {
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Noto Sans KR";
 }
 @font-face {
     font-family: "Noto Sans KR";
     src: url("../fonts/NotoSansKR-Regular.otf") format('truetype') font-weight-normal, url("../fonts/NotoSansCJKkr-Thin.otf") format('truetype') font-weight-lighter, url("../fonts/NotoSansKR-Bold.otf") format('truetype') font-weight-bold;
 }
-body{
+.my_body{
     font-family: 'Poppins', sans-serif;
     overflow: hidden;
 }
@@ -16,6 +16,7 @@ body{
 	bottom: 0;
 	left: 0;
 	height: 100%;
+	width:50%;
 	z-index: -1;
 }
 

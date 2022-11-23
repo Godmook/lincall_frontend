@@ -33,7 +33,25 @@ const TimeStamp = () => {
         </div>
     );
 };
+var stun_config ={
+    'iceServers': [
+        {
+            "urls": "stun:stun.l.google.com:19302"
+        },
+        {
+            "urls": "turn:211.202.222.162:8080",
+            'credential' : '1234',
+            'username' : 'admin'
+        },
+        {
+            "urls": "stun1:stun.l.google.com:19302"
+        },
+    ]
+}
 const CustomerMainPage = () => {
+    const ClientWebRTC = () => {
+       
+    }
     const location = useLocation();
     const userName = location.state.Name;
     const [current_mode, setMode] = useState(2);
@@ -191,9 +209,8 @@ const CustomerMainPage = () => {
             </div>
         )
     }
-    const Loading = () => {
-        const [stream,setStream]=useState(null);
-        const room_number = useRef(0);
+    var LoadingToggleSelect= useRef(0);
+    const WaitLoadingToggle = () => {
         const [wait_time, setWaitTime] = useState(0);
         useEffect(() => {
             const myInterval = setInterval(() => {
@@ -201,54 +218,6 @@ const CustomerMainPage = () => {
             }, 1000);
             return() => clearInterval(myInterval);
         }, []);
-        useEffect(()=> {
-            function handlerIceCandidate (e){
-                if(e.candidate) pc.addIceCandidate(e.candidate);
-                if(e.candidate) console.log(e.candidate);
-            }
-            const pc= new RTCPeerConnection(URLsetting.STUN_CONFIG)
-            navigator.mediaDevices.getUserMedia({video:false, audio:true})
-            .then((currentStream)=>{
-                setStream(currentStream);
-                pc.addTrack(stream.getTrack());
-            })
-            axios.get(URLsetting.LOCAL_API_URL+"consulting/create")
-            .then((response)=>{
-                console.log(response.data);
-                room_number.current=parseInt(response.data);
-                var socket= new SockJS("//localhost:8080/ws");
-                var stomp = Stomp.over(socket);
-                pc.onicecandidate=handlerIceCandidate;
-                stomp.connect ( {}, function(frame){
-                    stomp.subscribe("/sub/room/"+response.data,function(msg){
-                        if((msg.body).includes('join')){
-                            var tmp2=(msg.body).substring(0,(msg.body).length-4);
-                            if(tmp2!=userName){
-                                pc.createOffer()
-                                .then((offer)=> pc.setLocalDescription(offer))
-                                .then(()=>{
-                                    stomp.send("/sub/room/"+response.data+"/pub/data",JSON.stringify({type:'offer', sender:userName, channelId:response.data, data:pc.localDescription}));
-                                })
-                            }
-                        }
-                        else{
-                        var tmp=JSON.parse(msg.body);
-                        if(tmp.type=="answer"){
-                            var sdp=JSON.parse(tmp.data);
-                            pc.setRemoteDescription(sdp.sdp);
-                            stomp.send("/pub/data",JSON.stringify({type:'ice', sender:userName, channelId:response.data, data:"client ice"}));
-                        }
-                        else if(tmp.type=="ice"){
-                            console.log(pc.localDescription);
-                            console.log(pc.currentRemoteDescription);
-                            stomp.send("/pub/success");
-                        }
-                    }
-                    })
-                    stomp.send("/pub/join",JSON.stringify({type:'client', sender:userName, channelId:response.data, data:"dkdk"}));
-                })
-            })
-        },[])
         const CalculateTime = () => {
             if (wait_time >= 60) {
                 return parseInt(wait_time / 60) + '분 ' + wait_time % 60 + '초';
@@ -261,6 +230,7 @@ const CustomerMainPage = () => {
                 WebSocket.init();
             })
         }
+        if(!LoadingToggleSelect.current){
         return (
             <div className="loading_margin">
                 <div className="image_centerpos">
@@ -278,6 +248,106 @@ const CustomerMainPage = () => {
                 <WebSocketInit/>
             </div>
         )
+        }
+        else{
+            return (
+                <div className="center_inner_box"></div>
+            )
+        }
+    }
+    const Loading = () => {
+        const [stream,setStream]=useState(null);
+        const cur_page = useRef(0);
+        var flag=0;
+        let remoteVideo = new MediaStream();
+        useEffect(()=> {
+            axios.get(URLsetting.LOCAL_API_URL+"consulting/create")
+            .then((response)=> {
+                const pc = new RTCPeerConnection(
+                    {configuration: URLsetting.MEDIACONSTRAINTS ,stun_config }
+                );
+                function handlerIceCandidate(e) {
+                    if (e.candidate) {
+                        if(flag){
+                        stomp.send(
+                            "/pub/data",
+                            JSON.stringify({type: 'ice', sender: userName, channelId: response.data, data: e.candidate})
+                        );
+                        }
+                        console.log("HANDLER ICE State: " + pc.iceConnectionState);
+                    }
+                }(async () => {
+                    await navigator
+                        .mediaDevices
+                        .getUserMedia({audio: true, video: false})
+                        .then(stream => {
+                            stream
+                                .getTracks()
+                                .forEach(track => pc.addTrack(track, stream));
+                        })
+                })();
+                var socket = new SockJS(URLsetting.LOCAL_API_URL+"/ws");
+                var stomp = Stomp.over(socket);
+                pc.onicecandidate = handlerIceCandidate;
+                pc.addEventListener("icecandidate", handlerIceCandidate);
+                pc.addEventListener('track', async (event) => {
+                    const [remoteStream] = event.streams;
+                    remoteVideo.srcObject = remoteStream;
+                    console.log(remoteVideo.srcObject)
+                })
+                pc.addEventListener("connectionstatechange",(event)=>{
+                    if(pc.iceConnectionState=="connected"){
+                        console.log(pc.iceConnectionState);
+                        LoadingToggleSelect.current=1;
+                    }
+                    else{
+
+                    }
+                })
+                stomp.connect({}, function () {
+                    stomp.subscribe("/sub/room/" + response.data, function (msg) {
+                        if ((msg.body).includes('join')) {
+                            var tmp2 = (msg.body).substring(0, (msg.body).length - 5);
+                            if (tmp2 != userName) {
+                                pc
+                                    .createOffer({mandatory: { OfferToReceiveAudio: true, OfferToReceiveVideo: false }})
+                                    .then((offer) => pc.setLocalDescription(offer))
+                                    .then(() => {
+                                        stomp.send(
+                                            "/pub/data",
+                                            JSON.stringify({type: 'offer', sender: userName, channelId: response.data, data: pc.localDescription})
+                                        );
+                                    })
+                            }
+                        } else {
+                            var tmp = JSON.parse(msg.body);
+                            if (tmp.type == "answer") {
+                                flag=1;
+                                pc.setRemoteDescription(tmp.data);
+                                console.log("answer!!");
+                            } else if (tmp.type == "ice") {
+                                if (tmp.data) {
+                                    if(flag){
+                                        pc.addIceCandidate(tmp.data);
+                                        console.log("ICE State: " + pc.iceConnectionState);
+                                    }
+                                }
+                                console.log("ICE State: " + pc.iceConnectionState);
+                            }
+                        }
+                    })
+                    stomp.send(
+                        "/pub/join",
+                        JSON.stringify({type: 'client', sender: userName, channelId: response.data, data: pc.localDescription})
+                    );
+                })
+            })
+        },[])
+        return (
+            <>
+            <WaitLoadingToggle/>
+            </>
+        ) 
     }
     const fieldSetDisable = () => {
         const fieldset = document.getElementById('button_disable');
@@ -344,8 +414,8 @@ const CustomerMainPage = () => {
                     </fieldset>
                 </div>
                 <div className="center_box">
-                    <TimeStamp></TimeStamp>
-                    <ModeChange></ModeChange>
+                    <TimeStamp/>
+                    <ModeChange/>
                 </div>
             </div>
         </div>
