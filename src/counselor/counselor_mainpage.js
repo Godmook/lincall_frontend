@@ -67,24 +67,27 @@ const Mode1 = () => {
     )
 }
 
-function CalculateWaitingTime({ab}){
-    const [tmp_time,setTmptime] = useState("");
+function MakeWaitingList ({room,client, counselor, clientName,counselorName, time}){
+    const [diffTime, setDiffTime] = useState(0);
     useEffect(()=> {
         // 현재 시간 대비 대기 시간 구하기
-    },[])
-    return parseInt(tmp_time / 60).toString().padStart(2,"0") + ':' + parseInt(tmp_time % 60).toString().padStart(2,"0");
-}
-function MakeWaitingList ({room,client,time}){
+        const diffInterval = setInterval(()=>{
+            setDiffTime(
+                parseInt((new Date()-time)/1000)
+            )
+        }, 1000);
+        return() => clearInterval(diffInterval);
+    },[]);
+    console.log(room+clientName);
+    if(client!=="null" && counselor===null){
     return (
         <div className="waiting_list_bar">
-                <p className="bar_text_name">이름 {client}</p>
-                <p className="bar_text_time">대기 시간
-                <CalculateWaitingTime
-                ab={time}
-                />
+                <p className="bar_text_name">이름 {clientName}</p>
+                <p className="bar_text_time">대기 시간 {parseInt(diffTime / 60).toString().padStart(2,"0") + ':' + parseInt(diffTime % 60).toString().padStart(2,"0")}
                 </p>
         </div>
     )
+    }
 }
 function MakingEmotionChangeSentence (){
     return;
@@ -92,13 +95,16 @@ function MakingEmotionChangeSentence (){
 const Mode2 = () =>{
     const [isActive,setActive]=useState(true);
     const [room_number, setRoomNumber] = useState([]);
-    
+
+
     useEffect(()=> {
         axios.get(URLsetting.LOCAL_API_URL+"consulting/room-list")
         .then((response)=> {
             setRoomNumber(response.data);
+            console.log(response.data);
         })
     },[])
+
     const toggleClass = () => {
         var toggler = document.querySelector('.toggle-switch');
         toggler.classList.toggle('active');
@@ -158,6 +164,7 @@ const Mode2 = () =>{
         </div> 
     )
     */
+   /*
    return(
     <div className="after_calling_center">
         <div className="after_calling_center_bars">
@@ -190,6 +197,27 @@ const Mode2 = () =>{
             </div>
     </div> 
    )
+   */
+   return (
+    <>
+    <div className="mode2_top">
+        대기중인 고객
+    </div>
+    <div className="mode2_grid">
+        {
+    room_number.map((tmp) => (
+                            <MakeWaitingList
+                                room={tmp.roomId}
+                                client={tmp.client}
+                                counselor={tmp.counselor}
+                                clientName={tmp.clientName}
+                                counselorName={tmp.counselorName}
+                                time={tmp.createTime}/>
+                        ))
+    }
+    </div>
+    </>
+)
 }
 var userName;
 var userID;

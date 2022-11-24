@@ -1,5 +1,5 @@
 export default Object.freeze({
-    LOCAL_API_URL:"http://localhost:8080/",
+    LOCAL_API_URL:"http://172.16.43.219:8080/",
 
     REAL_API_URL:"",
 
