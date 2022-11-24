@@ -48,6 +48,8 @@ const Logins = () => {
     const whichUser=useRef(true);
     const idTmp = useRef(false);
     const userID=useRef();
+    const userName=useRef();
+    const userEmail=useRef();
     const words = "고객\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0" +
             "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0상담사";
 
@@ -73,7 +75,18 @@ const Logins = () => {
     const goToCustomerMain = () => {
         navigate('/customermain', {
             state: {
-                Name: userID.current
+                Id: userID.current,
+                Name:userName.current,
+                Email:userEmail.current
+            }
+        });
+    }
+    const goToCounselorMain = () => {
+        navigate('/counselormain', {
+            state: {
+                Id: userID.current,
+                Name:userName.current,
+                Email:userEmail.current
             }
         });
     }
@@ -99,6 +112,8 @@ const Logins = () => {
                 .then((response) => {
                     if (response.data) {
                         userID.current = response.data.id;
+                        userName.current=response.data.name;
+                        userEmail.current=response.data.email;
                         goToCustomerMain();
                     }
                     if (!response.data) {
@@ -114,8 +129,11 @@ const Logins = () => {
                 })
                 .then((response) => {
                     if (response.data) {
-                        console.log("로그인");
-                        userID.current = response.data;
+                        userID.current = response.data.id;
+                        userName.current=response.data.name;
+                        userEmail.current=response.data.email;
+                        goToCounselorMain();
+
                     }
                     if (!response.data) {
                         console.log("로그인 실패");

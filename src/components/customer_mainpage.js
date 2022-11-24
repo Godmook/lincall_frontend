@@ -54,6 +54,8 @@ const CustomerMainPage = () => {
     }
     const location = useLocation();
     const userName = location.state.Name;
+    const userID= location.state.Id;
+    const userEmail=location.state.Email;
     const [current_mode, setMode] = useState(2);
     const [consultingData, setData] = useState([]);
     const SetButtonFunction2 = () => {
@@ -188,11 +190,11 @@ const CustomerMainPage = () => {
                 </p>
                 <p>
                     <span className="ccFontStyle">아이디 </span>
-                    <span className="ddFontStyle">{userName}</span>
+                    <span className="ddFontStyle">{userID}</span>
                 </p>
                 <p>
                     <span className="ccFontStyle">이메일 </span>
-                    <span className="ddFontStyle">{userName}</span>
+                    <span className="ddFontStyle">{userEmail}</span>
                 </p>
                 <div className="row_align">
                         <div className="eeFontStyle">
@@ -210,6 +212,8 @@ const CustomerMainPage = () => {
         )
     }
     var LoadingToggleSelect= useRef(0);
+    var ROOM_NUMBER_CONSIST=useRef();
+    var isStompDisconnected=useRef(0);
     const WaitLoadingToggle = () => {
         const [wait_time, setWaitTime] = useState(0);
         useEffect(() => {
@@ -251,13 +255,11 @@ const CustomerMainPage = () => {
         }
         else{
             return (
-                <div className="center_inner_box"></div>
+                <div className="center_inner_box">HELLO</div>
             )
         }
     }
     const Loading = () => {
-        const [stream,setStream]=useState(null);
-        const cur_page = useRef(0);
         var flag=0;
         let remoteVideo = new MediaStream();
         useEffect(()=> {
@@ -266,12 +268,13 @@ const CustomerMainPage = () => {
                 const pc = new RTCPeerConnection(
                     {configuration: URLsetting.MEDIACONSTRAINTS ,stun_config }
                 );
+                ROOM_NUMBER_CONSIST.current=response.data;
                 function handlerIceCandidate(e) {
                     if (e.candidate) {
                         if(flag){
                         stomp.send(
                             "/pub/data",
-                            JSON.stringify({type: 'ice', sender: userName, channelId: response.data, data: e.candidate})
+                            JSON.stringify({type: 'ice', sender: userID, channelId: response.data, data: e.candidate})
                         );
                         }
                         console.log("HANDLER ICE State: " + pc.iceConnectionState);
@@ -300,22 +303,19 @@ const CustomerMainPage = () => {
                         console.log(pc.iceConnectionState);
                         LoadingToggleSelect.current=1;
                     }
-                    else{
-
-                    }
                 })
                 stomp.connect({}, function () {
                     stomp.subscribe("/sub/room/" + response.data, function (msg) {
                         if ((msg.body).includes('join')) {
                             var tmp2 = (msg.body).substring(0, (msg.body).length - 5);
-                            if (tmp2 != userName) {
+                            if (tmp2 != userID) {
                                 pc
                                     .createOffer({mandatory: { OfferToReceiveAudio: true, OfferToReceiveVideo: false }})
                                     .then((offer) => pc.setLocalDescription(offer))
                                     .then(() => {
                                         stomp.send(
                                             "/pub/data",
-                                            JSON.stringify({type: 'offer', sender: userName, channelId: response.data, data: pc.localDescription})
+                                            JSON.stringify({type: 'offer', sender: userID, channelId: response.data, data: pc.localDescription})
                                         );
                                     })
                             }
@@ -338,7 +338,7 @@ const CustomerMainPage = () => {
                     })
                     stomp.send(
                         "/pub/join",
-                        JSON.stringify({type: 'client', sender: userName, channelId: response.data, data: pc.localDescription})
+                        JSON.stringify({type: 'client', sender: userID, channelId: response.data, data: pc.localDescription})
                     );
                 })
             })
@@ -357,6 +357,12 @@ const CustomerMainPage = () => {
         const fieldset = document.getElementById('button_disable');
         fieldset.disabled = false;
         SetButtonFunction2();
+        var socket = new SockJS(URLsetting.LOCAL_API_URL+"/ws");
+                var stomp = Stomp.over(socket);
+                stomp.connect({}, function () {
+                    stomp.send("/pub/quit",JSON.stringify({type:"client",sender:userID,channelId:ROOM_NUMBER_CONSIST.current,data:"asdfafdasf"}));
+                    stomp.disconnect()
+                })
     }
     useEffect(() => {
         axios

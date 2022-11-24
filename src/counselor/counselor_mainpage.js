@@ -191,7 +191,14 @@ const Mode2 = () =>{
     </div> 
    )
 }
+var userName;
+var userID;
+var userEmail;
 const CounselorMainPage = () => {
+    const location = useLocation();
+    userName = location.state.Name;
+    userID= location.state.Id;
+    userEmail=location.state.Email;
     const [current_mode, setMode] = useState(2);
     const leftbar_backgroundcolor = (number) => {
         for (var i = 1; i < 6; i++) {
@@ -230,7 +237,7 @@ const CounselorMainPage = () => {
             <div className="left_bar_counselor_mainpage">
                 <p className="lincall">LINCALL</p>
                 <p className="counselor_text">상담사</p>
-                <p className="nameFontStyle">윤석진</p>
+                <p className="nameFontStyle">{userName}</p>
                 <div className="left_bar_gray_box_counselor">
                     <div className="currentStateStyle">온라인</div>
                 </div>
