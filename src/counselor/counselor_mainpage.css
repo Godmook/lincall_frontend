@@ -195,6 +195,7 @@
     grid-auto-flow:row;
     overflow: scroll;
     grid-auto-rows: 16%;
+    row-gap: 2em;
 }
 .mode2_grid::-webkit-scrollbar{
     height: 4%;
@@ -220,7 +221,7 @@
     height: 10%;
     display: flex;
     justify-content: flex-start;
-    padding: 60px 35px 35px 35px;
+    padding: 60px 35px 35px 100px;
     font-size: 300%;
     font-weight: normal;
     flex-direction: column;
