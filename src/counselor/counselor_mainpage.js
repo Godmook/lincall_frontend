@@ -66,24 +66,28 @@ const Mode1 = () => {
 </>
     )
 }
-
-function MakeWaitingList ({room,client, counselor, clientName,counselorName, time}){
+function GetDiffTime ({aa}){
     const [diffTime, setDiffTime] = useState(0);
     useEffect(()=> {
         // 현재 시간 대비 대기 시간 구하기
         const diffInterval = setInterval(()=>{
             setDiffTime(
-                parseInt((new Date()-time)/1000)
+                parseInt((new Date()-aa)/1000)
             )
-        }, 1000);
+        }, 200);
         return() => clearInterval(diffInterval);
     },[]);
+    return parseInt(diffTime / 60).toString().padStart(2,"0") + ':' + parseInt(diffTime % 60).toString().padStart(2,"0")
+}
+function MakeWaitingList ({room,client, counselor, clientName,counselorName, time}){
+    const navigate=useNavigate();
+    const cur_style=useRef("waiting_list_bar1");
     console.log(room+clientName);
     if(client!=="null" && counselor===null){
     return (
-        <div className="waiting_list_bar">
+        <div className={cur_style.current} onClick={() => navigate('/counselor/room/'+room)}>
                 <p className="bar_text_name">이름 {clientName}</p>
-                <p className="bar_text_time">대기 시간 {parseInt(diffTime / 60).toString().padStart(2,"0") + ':' + parseInt(diffTime % 60).toString().padStart(2,"0")}
+                <p className="bar_text_time">대기 시간 {<GetDiffTime aa={time}/>}
                 </p>
         </div>
     )
