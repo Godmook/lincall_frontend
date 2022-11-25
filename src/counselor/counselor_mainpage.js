@@ -85,7 +85,13 @@ function MakeWaitingList ({room,client, counselor, clientName,counselorName, tim
     console.log(room+clientName);
     if(client!=="null" && counselor===null){
     return (
-        <div className={cur_style.current} onClick={() => navigate('/counselor/room/'+room)}>
+        <div className={cur_style.current} onClick={() => navigate('/counselor/room/'+room, {
+            state: {
+                Room:room,
+                Name: userName,
+                Id: userID
+            }
+        })}>
                 <p className="bar_text_name">이름 {clientName}</p>
                 <p className="bar_text_time">대기 시간 {<GetDiffTime aa={time}/>}
                 </p>
@@ -113,61 +119,6 @@ const Mode2 = () =>{
         var toggler = document.querySelector('.toggle-switch');
         toggler.classList.toggle('active');
     }
-    /*
-    return (
-        <>
-        <div className="mode2_top">
-            대기중인 고객
-        </div>
-        <div className="mode2_grid">
-            <MakeWaitingList/>
-        </div>
-        </>
-    )*/
-    /*
-    return(
-        <div className="calling_center">
-            <div className="calling_center_top">
-                <div className="calling_center_top_left">
-                    <div className="left1"><p className="left1_text">고객 감정</p><p className="emotion"></p></div>
-                    <div className="left2"><p className="left2_text">목소리 크기<p className="volume"></p><p className="volume_db"></p></p></div>
-                    <div className="left3"><p className="left3_text">말 빠르기<p className="speed"></p><p className="speed_s_m"></p></p></div>
-                </div>
-                <div className="calling_center_top_right">
-                    <div className="calling_center_top_right_question">
-                        <p className="right1">Q. 주문 취소는 어떻게 해야 하나요?</p>
-                    </div>
-                    <div className="calling_center_top_right_answer">
-                    <div className="right2">
-                        1. 가게에서 주문을 접수하기 전<br/>
-                        App 에서 직접 취소할 수 있습니다.<br/>
-                        -경로 : 주문내역 &#8594; '취소할 주문' 클릭 &#8594; '주문 취소' 버튼 클릭<br/>
-                    </div>
-                    </div>                    
-                </div>
-            </div>
-            <div className="calling_center_bottom">
-                <div className="calling_center_bottom_left">
-                    <div className="search_box">
-                        <input type="text" className="search_txt" name=""placeholder="검색할 것을 입력하세요 !"></input>
-                    </div>
-                    <div className="chatting">
-                            
-                        </div>
-                </div>
-                <div className="calling_center_bottom_right">
-                    <div className="mute">
-                        <p className="buttonMame">고객 음성 차단</p>
-                        <span className="toggle-switch" onClick={toggleClass}>
-                            <span className="toggle-knob"></span>
-                        </span>
-                    </div>
-                    <div className="changeEmotion"></div>
-                </div>
-            </div>
-        </div> 
-    )
-    */
    /*
    return(
     <div className="after_calling_center">

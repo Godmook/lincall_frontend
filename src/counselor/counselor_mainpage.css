@@ -194,7 +194,7 @@
     grid-template: 4fr;
     align-items: center;
     grid-auto-flow:row;
-    overflow: scroll;
+    overflow: hidden;
     grid-auto-rows: 25%;
     padding: 3px;
 }
@@ -231,7 +231,7 @@
     grid-template: 6fr;
     align-items: center;
     grid-auto-flow:row;
-    overflow: scroll;
+    overflow: auto;
     grid-auto-rows: 16%;
     row-gap: 2em;
 }
