@@ -4,6 +4,110 @@ import "./counselor_mainpage.css";
 import axios from "axios";
 import {useLocation} from "react-router-dom";
 import URLsetting from "../Setting/URLsetting";
+const Createchat = ({type,message,time,emotion,question,answer}) => {
+    if(type=="client"){
+        return(
+            <div className="chat_container_left">
+                <div className="chat_left">{message}</div>
+            </div>
+        )
+    }
+    else if(type=="counselor"){
+        return(
+            <div className="chat_container_right">
+                <div className="chat_right">{message}</div>
+            </div>
+        )
+    }
+}
+const CreateEmotionChange = ({type,message,time,emotion,question,answer}) => {
+    return(
+        <div className="emotion_change_sentence">{message}</div>
+    )
+}
+var ModelSample = [
+    {
+        "type": "client",
+        "message": "test111test111test111test111test111test111test111",
+        "time": 155555555,
+        "emotion" : "angry",
+        "question" : "dkdkdkdk",
+        "answer" : "bbbbbbbb",
+},
+{
+    "type": "counselor",
+    "message": "counselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselor",
+    "time": 155555555,
+    "emotion" : "angry",
+    "question" : "dkdkdkdk",
+    "answer" : "bbbbbbbb",
+},
+{
+    "type": "client",
+    "message": "test111",
+    "time": 155555555,
+    "emotion" : "angry",
+    "question" : "dkdkdkdk",
+    "answer" : "bbbbbbbb",
+},
+{
+    "type": "client",
+    "message": "test111",
+    "time": 155555555,
+    "emotion" : "angry",
+    "question" : "dkdkdkdk",
+    "answer" : "bbbbbbbb",
+},
+{
+    "type": "client",
+    "message": "test111",
+    "time": 155555555,
+    "emotion" : "angry",
+    "question" : "dkdkdkdk",
+    "answer" : "bbbbbbbb",
+},
+{
+    "type": "client",
+    "message": "test111",
+    "time": 155555555,
+    "emotion" : "angry",
+    "question" : "dkdkdkdk",
+    "answer" : "bbbbbbbb",
+},
+{
+    "type": "notice",
+    "message": "notice",
+    "time": 155555555,
+    "emotion" : "angry",
+    "question" : "dkdkdkdk",
+    "answer" : "bbbbbbbb",
+},
+{
+    "type": "client",
+    "message": "test111",
+    "time": 155555555,
+    "emotion" : "angry",
+    "question" : "dkdkdkdk",
+    "answer" : "bbbbbbbb",
+},
+{
+    "type": "counselor",
+    "message": "this_is_counselor",
+    "time": 155555555,
+    "emotion" : "angry",
+    "question" : "dkdkdkdk",
+    "answer" : "bbbbbbbb",
+},
+{
+    "type": "client",
+    "message": "test111",
+    "time": 155555555,
+    "emotion" : "angry",
+    "question" : "dkdkdkdk",
+    "answer" : "bbbbbbbb",
+},
+
+]
 function Mode1GrayBox ({start,end,time,id,people}){
     return (
         <div className="mode1_grid_gray_box">
@@ -105,21 +209,32 @@ function MakingEmotionChangeSentence (){
 const Mode2 = () =>{
     const [isActive,setActive]=useState(true);
     const [room_number, setRoomNumber] = useState([]);
-
-
+    const [ptImg, setPositiveImg] = useState();
+    const [ntImg, setNegativeImg] = useState();
+    const [enters, setEnters]=useState([]);
     useEffect(()=> {
+        setEnters(ModelSample);
         axios.get(URLsetting.LOCAL_API_URL+"consulting/room-list")
         .then((response)=> {
             setRoomNumber(response.data);
             console.log(response.data);
         })
+        axios
+            .get(URLsetting.LOCAL_API_URL+"consulting/wordcloud/angry", {
+                params: {
+                    id: 155
+                }
+            })
+            .then((response) => {
+                setNegativeImg(response.data);
+            })
     },[])
 
     const toggleClass = () => {
         var toggler = document.querySelector('.toggle-switch');
         toggler.classList.toggle('active');
     }
-   /*
+    
    return(
     <div className="after_calling_center">
         <div className="after_calling_center_bars">
@@ -131,11 +246,11 @@ const Mode2 = () =>{
         <div className="after_calling_center_top">
             <div className="after_calling_keywords">
                 <div className="positive_keyword">긍정 키워드
-                    <img src="https://thumbs.dreamstime.com/b/design-wordcloud-15580394.jpg" alt="My Image" className="wordcloud_img"></img>
+                    <img src={`data:image/jpeg;base64,${ntImg}`} alt="My Image" className="wordcloud_img"></img>
                 </div>
                 <div class='v-line'></div>
                 <div className="negative_keyword">부정 키워드
-                    <img src="https://t1.daumcdn.net/cfile/tistory/99D89D3F5A4654AF13" alt="My Image"className="wordcloud_img"></img>
+                    <img src={`data:image/jpeg;base64,${ntImg}`} alt="My Image"className="wordcloud_img"></img>
                 </div>
             </div>
         </div>
@@ -144,16 +259,44 @@ const Mode2 = () =>{
                 <div className="after_search_box">
                         <input type="text" className="after_search_txt" name=""placeholder="검색할 것을 입력하세요 !"></input>
                     </div>
-                    <div className="chatting"></div>
+                    <div className="chatting">
+                    <div className="chatting_grid">
+                    {
+                        enters.map((tmp) => (
+                                < Createchat
+                                    type={tmp.type}
+                                    message={tmp.message}
+                                    time={tmp.time}
+                                    emotion={tmp.emotion}
+                                    question={tmp.question}
+                                    answer={tmp.answer}/>
+                            ))
+                        }
+                    </div>
+                    </div>
                 </div>
                 <div className="after_calling_center_bottom_right">
-                    <div className="after_changeEmotion"></div>
+                    <div className="after_changeEmotion">
+                    <div className="emotion_change_grid">
+                        {
+                            enters.map((tmp) => (
+                                    < CreateEmotionChange
+                                        type={tmp.type}
+                                        message={tmp.message}
+                                        time={tmp.time}
+                                        emotion={tmp.emotion}
+                                        question={tmp.question}
+                                        answer={tmp.answer}/>
+                                ))
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
     </div> 
    )
-   */
-  
+   
+  /*
    return (
     <>
     <div className="mode2_top">
@@ -173,8 +316,7 @@ const Mode2 = () =>{
     }
     </div>
     </>
-)
-
+)*/
 }
 var userName;
 var userID;

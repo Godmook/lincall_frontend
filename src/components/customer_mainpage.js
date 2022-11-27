@@ -243,7 +243,7 @@ const CustomerMainPage = () => {
                 <div className="loadingFontStyle">
                     현재 상담을 기다리고 있습니다.
                     <br/><br/>
-                    상담 대기 시간 :
+                    상담 대기 시간 : 
                     <CalculateTime/>
                 </div>
                 <div className="red_bar" onClick={fieldSetAable}>
@@ -289,7 +289,7 @@ const CustomerMainPage = () => {
                                 .forEach(track => pc.addTrack(track, stream));
                         })
                 })();
-                var socket = new SockJS("//211.202.222.162:8080/ws");
+                var socket = new SockJS(URLsetting.LOCAL_API_URL+"/ws");
                 var stomp = Stomp.over(socket);
                 pc.onicecandidate = handlerIceCandidate;
                 pc.addEventListener("icecandidate", handlerIceCandidate);
