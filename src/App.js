@@ -4,6 +4,8 @@ import Login from "./components/login";
 import CounselorMainPage from "./counselor/counselor_mainpage";
 import Test from "./components/test";
 import Room from './room/room';
+import AfterCounselor from './after_counselor_record/after_counselor_record';
+
 function App() {
   return (
     <div className="page">
@@ -13,6 +15,7 @@ function App() {
       <Route path='/counselormain' element={<CounselorMainPage/>}/>
       <Route path='/counselor/room/:id' element={<Room/>}/>
       <Route path='/test' element={<Test/>}/>
+      <Route path='/after_counselor_record' element={<AfterCounselor/>}/>
     </Routes>
     </div>
   );

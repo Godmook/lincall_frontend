@@ -153,6 +153,7 @@ const Mode2 = () =>{
     </div> 
    )
    */
+  
    return (
     <>
     <div className="mode2_top">
@@ -173,6 +174,7 @@ const Mode2 = () =>{
     </div>
     </>
 )
+
 }
 var userName;
 var userID;
