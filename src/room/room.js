@@ -8,6 +8,7 @@ import URLsetting from "../Setting/URLsetting";
 import SockJS from "sockjs-client";
 import Stomp, { client } from "webstomp-client";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { WavRecorder } from "webm-to-wav-converter";
 
 var stun_config ={
     'iceServers': [
@@ -24,7 +25,6 @@ var stun_config ={
         },
     ]
 }
-
 const toggleClass = () => {
     var toggler = document.querySelector('.toggle-switch');
     toggler.classList.toggle('active');
@@ -227,7 +227,6 @@ var ModelSample2 = [
 ]
 
 const Room = () => {
-
     const location = useLocation();
     const roomID = location.state.Room;
     const senderID= location.state.Id;
@@ -244,9 +243,45 @@ const Room = () => {
         };
         setEnters(enters => [...enters, textValue]);
     }
+    const TurnONMedia = () => {
+        mediaRecorder.start();
+        console.log("start!");
+    }
+    const Donwload = () => {
+        setTimeout(function () {mediaRecorder.download()},1);
+    }
+    const TestTurnOFfMedia = () => {
+        mediaRecorder.stop();
+        const p = new Promise((resolve,reject) => {
+            setTimeout(function(){resolve(mediaRecorder.getBlob())},1)
+        })
+        p.then(msg=>{
+            let reader = new FileReader();
+        let base64data;
+        console.log(msg);
+        reader.readAsDataURL(msg);
+        reader.onloadend = () => {
+            base64data = reader.result;
+            
+            let body = {
+                roomId: roomID,
+                from: "counselor",
+                time: 1669302000,
+                encodeStr : base64data
+            };
+            axios.post(URLsetting.LOCAL_API_URL+"main/addText", JSON.stringify(body), {
+                headers: {
+                    "Content-Type": 'application/json'
+                }
+            })
+        }
+        })
+       //setTimeout(function(){console.log(blob)},3);
+    
+    }
 console.log(ModelSample.length);
     var flag=0;
-    let audio = new MediaStream();
+    const [mediaRecorder,setMediaRecorder] = useState();
     let remoteVideo = new MediaStream();
     useEffect(()=>{
         setEnters(ModelSample);
@@ -258,7 +293,7 @@ console.log(ModelSample.length);
                 .mediaDevices
                 .getUserMedia({audio: true, video: false})
                 .then(stream => {
-                    audio.srcObject=stream;
+                    setMediaRecorder(new WavRecorder(stream));
                     stream
                         .getTracks()
                         .forEach(track => pc.addTrack(track, stream));
@@ -273,7 +308,7 @@ console.log(ModelSample.length);
                     console.log("ICE State: " + pc.iceConnectionState);
                 }
             }
-        var socket = new SockJS(URLsetting.LOCAL_API_URL+"ws");
+        var socket = new SockJS("//211.202.222.162:8080/ws");
         var stomp = Stomp.over(socket);
         pc.onicecandidate = handlerIceCandidate;
         pc.addEventListener("icecandidate", handlerIceCandidate);
@@ -282,6 +317,7 @@ console.log(ModelSample.length);
             remoteVideo.srcObject = remoteStream;
         })
         stomp.connect({}, function (frame) {
+            console.log("haha");
             stomp.subscribe("/sub/room/" + roomID, function (msg) {
                 if ((msg.body).includes('join')) {} else {
                     var tmp = JSON.parse(msg.body);
@@ -327,9 +363,9 @@ console.log(ModelSample.length);
         <div className="calling_center">
             <div className="calling_center_top">
                 <div className="calling_center_top_left">
-                    <div className="left1" onClick={addValue}><p className="left1_text">고객 감정</p><p className="emotion"></p></div>
-                    <div className="left2"><p className="left2_text">목소리 크기<p className="volume"></p><p className="volume_db"></p></p></div>
-                    <div className="left3"><p className="left3_text">말 빠르기<p className="speed"></p><p className="speed_s_m"></p></p></div>
+                    <div className="left1" onClick={Donwload}><p className="left1_text">고객 감정</p><p className="emotion"></p></div>
+                    <div className="left2"><p className="left2_text" onClick={TurnONMedia}>목소리 크기<p className="volume"></p><p className="volume_db"></p></p></div>
+                    <div className="left3"><p className="left3_text" onClick={TestTurnOFfMedia}>말 빠르기<p className="speed"></p><p className="speed_s_m"></p></p></div>
                 </div>
                 <div className="calling_center_top_right">
                     <div className="calling_center_top_right_question">

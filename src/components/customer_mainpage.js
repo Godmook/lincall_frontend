@@ -289,7 +289,7 @@ const CustomerMainPage = () => {
                                 .forEach(track => pc.addTrack(track, stream));
                         })
                 })();
-                var socket = new SockJS(URLsetting.LOCAL_API_URL+"/ws");
+                var socket = new SockJS("//211.202.222.162:8080/ws");
                 var stomp = Stomp.over(socket);
                 pc.onicecandidate = handlerIceCandidate;
                 pc.addEventListener("icecandidate", handlerIceCandidate);

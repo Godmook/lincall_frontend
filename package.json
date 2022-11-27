@@ -23,6 +23,7 @@
     "simple-peer": "^9.11.1",
     "sockjs-client": "^1.6.1",
     "web-vitals": "^2.1.4",
+    "webm-to-wav-converter": "^1.1.0",
     "webstomp-client": "^1.2.6"
   },
   "scripts": {

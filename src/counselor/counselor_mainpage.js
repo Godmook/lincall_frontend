@@ -28,13 +28,13 @@ const Mode1 = () => {
     return (
         <> < div className = "center_top" > <div className="text_box">
             <p className="center_top_text" id="todayCallCount">오늘 상담 건수
-                <span classNane="variable_bold" id="today_call_count"></span>
+                <span className="variable_bold" id="today_call_count"></span>
                 건</p>
             <p className="center_top_text" id="todayCallTime">오늘 상담 시간
-                <span classNane="variable_bold" id="today_call_time"></span>
+                <span className="variable_bold" id="today_call_time"></span>
             </p>
             <p className="center_top_text" id="todayCallTime">대기 고객
-                <span classNane="variable_bold" id="waiting_customer_count"></span>
+                <span className="variable_bold" id="waiting_customer_count"></span>
                 명</p>
         </div>
     </div>
