@@ -49,9 +49,6 @@ var stun_config ={
     ]
 }
 const CustomerMainPage = () => {
-    const ClientWebRTC = () => {
-       
-    }
     const location = useLocation();
     const userName = location.state.Name;
     const userID= location.state.Id;
@@ -215,6 +212,16 @@ const CustomerMainPage = () => {
     var ROOM_NUMBER_CONSIST=useRef();
     var isStompDisconnected=useRef(0);
     const WaitLoadingToggle = () => {
+        const ConsultingEnd = () => {
+            axios.get(URLsetting.LOCAL_API_URL+"consulting/end",{
+                params: {
+                    id: ROOM_NUMBER_CONSIST.current
+                }
+            })
+            .then((response)=>{
+                console.log("finish!");
+            })
+        }
         const [wait_time, setWaitTime] = useState(0);
         useEffect(() => {
             const myInterval = setInterval(() => {
@@ -259,6 +266,7 @@ const CustomerMainPage = () => {
                 <div className="center_inner_box">HELLO
                 <div className="center_inner_box" onClick={TurnONMedia}>APPLE</div>
                 <div className="center_inner_box" onClick={TestTurnOFfMedia}>Banana</div>
+                <div className="center_inner_box" onClick={ConsultingEnd}>Color</div>
                  <audio id="userAudio" autoPlay="autoPlay" playsInline="playsInline"></audio>
                 </div>
             )
@@ -406,9 +414,9 @@ const CustomerMainPage = () => {
     }
     useEffect(() => {
         axios
-            .get(URLsetting.LOCAL_API_URL+"consulting/records", {
+            .get(URLsetting.LOCAL_API_URL+"consulting/records/client", {
                 params: {
-                    clientID: "cmoh4135"
+                    clientID: userID
                 }
             })
             .then((response) => {

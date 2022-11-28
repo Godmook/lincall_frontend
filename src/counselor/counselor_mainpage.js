@@ -187,7 +187,7 @@ const Mode1 = () => {
                     }
             </div>
         </div>
-        <div class='v-line'></div>
+        <div className='v-line'></div>
         <div className="todayKeyword">
             <p className="emotion_wordcloue_text">happy</p>
             <div className="word_cloud" id="positive_wordcloud">좋아용</div>
@@ -235,6 +235,7 @@ function MakingEmotionChangeSentence (){
     return;
 }
 const Mode2 = () =>{
+    const [waiting_people, setWaitPeople] = useState(0);
     const [isActive,setActive]=useState(true);
     const [room_number, setRoomNumber] = useState([]);
     const [ptImg, setPositiveImg] = useState();
@@ -256,6 +257,10 @@ const Mode2 = () =>{
             .then((response) => {
                 setNegativeImg(response.data);
             })
+        axios.get(URLsetting.LOCAL_API_URL+"consulting/waitClient")
+        .then((response)=>{
+            setWaitPeople(response.data);
+        })
     },[])
 
     const toggleClass = () => {
@@ -327,7 +332,7 @@ const Mode2 = () =>{
    return (
     <>
     <div className="mode2_top">
-        대기중인 고객
+        대기중인 고객 {waiting_people}
     </div>
     <div className="mode2_grid">
         {
