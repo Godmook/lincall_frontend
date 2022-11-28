@@ -1,4 +1,4 @@
-import React, {useEffect, useState, Component, useRef, FontAwesomeIcon} from "react";
+import React, {useEffect, useState, Component, useRef} from "react";
 import {useNavigate} from "react-router-dom";
 import "../counselor/counselor_mainpage.css";
 import "../room/room.css";
@@ -7,6 +7,8 @@ import {useLocation} from "react-router-dom";
 import URLsetting from "../Setting/URLsetting";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
+import { faMeh,faAngry, faSmile } from "@fortawesome/free-regular-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 var stun_config ={
     'iceServers': [
@@ -23,43 +25,107 @@ var stun_config ={
         },
     ]
 }
-
+const Createchat = ({type,message,time,emotion,question,answer}) => {
+    const [facetype,setFaceType] = useState(faMeh);
+    const [chatcolor,setChatColor] = useState("chat_normal");
+    useEffect(()=> {
+        if(emotion==="angry"){
+            setChatColor("chat_angry")
+            setFaceType(faAngry);
+        }
+        else if(emotion==="happy"){
+            setChatColor("chat_happy");
+            setFaceType(faSmile);
+        }
+    },[])
+    if(type=="client"){
+        return(
+            <div className="chat_left_container">
+                <FontAwesomeIcon icon={facetype} size="3x"/>
+                <div className={chatcolor}>{message}</div>
+            </div>
+        )
+    }
+    else if(type=="counselor"){
+        return(
+            <div className="chat_right_container">
+                <div className={chatcolor}>{message}</div>
+                <FontAwesomeIcon icon={facetype} size="3x"/>
+            </div>
+        )
+    }
+    else if(type=="notice"){
+        return(
+            <div className="chat_container_center">
+                <div className="chat_center">{message}</div>
+            </div>
+        )
+    }
+}
 const AfterCounselor = () => {
 
     const location = useLocation();
-    const roomID = location.state.Room;
-    const senderID= location.state.Id;
+    const start = location.state.start;
+    const counselorName= location.state.counselorName;
+    const clientName = location.state.clientName;
+    const time = location.state.time;
+    const Roomid= location.state.id;
     const [ptImg, setPositiveImg] = useState();
     const [ntImg, setNegativeImg] = useState();
-    var flag=0;
-    let audio = new MediaStream();
-    let remoteVideo = new MediaStream();
+    const [talkmessage,setTalkmessage] = useState();
+    const [getangerpoint,setAngerPoint] = useState();
     useEffect(()=>{
         axios
             .get(URLsetting.LOCAL_API_URL+"consulting/wordcloud/angry", {
                 params: {
-                    id: 155
+                    id: Roomid
                 }
             })
             .then((response) => {
                 setNegativeImg(response.data);
             })
-    })
-    const Example = ({ ntImg }) => <img src={`data:image/jpeg;base64,${ntImg}`} />
+            axios
+            .get(URLsetting.LOCAL_API_URL+"consulting/wordcloud/happy", {
+                params: {
+                    id: Roomid
+                }
+            })
+            .then((response) => {
+                setPositiveImg(response.data);
+            })
+            axios.get(URLsetting.LOCAL_API_URL+"main/dialogue",{
+                params:{
+                    roomId:Roomid
+                }
+            })
+            .then((response)=> {
+                setTalkmessage(response.data);
+                console.log(talkmessage);
+            })
+            axios.get(URLsetting.LOCAL_API_URL+"main/angerPoint",{
+                params:{
+                    roomId:Roomid
+                }
+            })
+            .then((response)=>{
+                setAngerPoint(response.data);
+                console.log(getangerpoint);
+            })
+    },[])
     return(
         <div className="after_calling_center">
             <div className="after_calling_center_bars">
                 <button className="after_calling_go_back">back</button>
                 <div className="after_calling_info_bar">
-                    <p className="after_calling_info_text">상담 일시 : 2022년 09월 29일 19:07:06 30분</p>
+                    <p className="after_calling_info_text">상담 일시 : {start} {time}분</p>
                 </div>
             </div>
             <div className="after_calling_center_top">
                 <div className="after_calling_keywords">
                     <div className="positive_keyword">긍정 키워드
-                        <img src={`data:image/jpeg;base64,${ntImg}`} alt="My Image" className="wordcloud_img"></img>
+                        <img src={`data:image/jpeg;base64,${ptImg}`} alt="My Image" className="wordcloud_img"></img>
                     </div>
-                    <div class='v-line'></div>
+                    <div className='v-line'></div>
                     <div className="negative_keyword">부정 키워드
                         <img src={`data:image/jpeg;base64,${ntImg}`} alt="My Image"className="wordcloud_img"></img>
                     </div>
@@ -70,7 +136,11 @@ const AfterCounselor = () => {
                     <div className="after_search_box">
                             <input type="text" className="after_search_txt" name=""placeholder="검색할 것을 입력하세요 !"></input>
                         </div>
-                        <div className="chatting"></div>
+                        <div className="chatting">
+                            {
+
+                            }
+                        </div>
                     </div>
                     <div className="after_calling_center_bottom_right">
                         <div className="after_changeEmotion"></div>

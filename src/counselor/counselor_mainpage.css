@@ -25,6 +25,9 @@
 	justify-content: flex-end;
 	align-items: center;
 }
+.variable_bold{
+    font-weight: bold;
+}
 .counselor_cover {
     background-color: white;
     width: 90%;
@@ -204,9 +207,10 @@
     grid-template: 4fr;
     align-items: center;
     grid-auto-flow:row;
-    overflow: hidden;
+    overflow: auto;
     grid-auto-rows: 25%;
     padding: 3px;
+    margin-left: 4%;
 }
 .mode1_grid::-webkit-scrollbar{
     height: 4%;
@@ -214,10 +218,10 @@
 .mode1_grid::-webkit-scrollbar-thumb{
     height: 30%;
     border-radius: 10px;
-    background: #717171;;
+    background: transparent;;
 }
 .mode1_grid::-webkit-scrollbar-track{
-    background: #D9D9D9;
+    background: transparent;
     border-radius: 10px;
 }
 .mode1_grid_gray_box{
@@ -334,12 +338,18 @@
     width: 100%;
     height: 50%;
     flex-direction: column;
+    justify-content: space-around;
+    display: flex;
+    align-items: center;
 }
 .angry_todayKeyword{
     display: flex;
     width: 100%;
     height: 50%;
     flex-direction: column;
+    justify-content: space-around;
+    display: flex;
+    align-items: center;
 }
 .wordcloud{
     display: flex;
@@ -887,7 +897,21 @@ a {
     font-size: 20px;
     font-weight: bold;
 }
-.wordcloud_img_main{
-    width:100%;
-    height:100%;
+.wordcloud_img_main_happy{
+    width:80%;
+    height: 80%;
+    justify-content: space-around;
+    display: flex;
+    align-items: center;
+    background-color: #c6e6f7;
+    border-radius: 20px;
+}
+.wordcloud_img_main_angry{
+    width:80%;
+    height: 80%;
+    justify-content: space-around;
+    display: flex;
+    align-items: center;
+    background-color: #faa6a0;
+    border-radius: 20px;
 }

@@ -246,7 +246,15 @@ const Room = () => {
                             setQuestion(tmp.question);
                         }
                         setCurrentMessage(tmp.message);
-                        setEnters(enters => [...enters, tmp]);
+                        const p = new Promise((resolve,reject) => {
+                            resolve(setEnters(enters => [...enters, tmp]));
+                        })
+                        p.then(()=>{
+                            setTimeout(()=>{
+                                var objDiv = document.getElementById("ggggg");
+                                objDiv.scrollTop = objDiv.scrollHeight;
+                            },1);
+                        })
                     }
                     else if(tmp.message=="reload anger starting point"){
                         setEnters2(enters2 => [...enters2, tmp]);
@@ -289,7 +297,7 @@ const Room = () => {
                         <div className="search_box">
                             <input type="text" className="search_txt" name=""placeholder="검색할 것을 입력하세요 !"></input>
                         </div>
-                        <div className="chatting_grid">
+                        <div className="chatting_grid" id="ggggg">
                         {
                             enters.map((tmp) => (
                                     < Createchat

@@ -8,6 +8,10 @@ import URLsetting from "../Setting/URLsetting";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import { WavRecorder } from "webm-to-wav-converter";
+function ShowCurTime ({current_time}) {
+
+    return "상담시간 : " + parseInt(current_time/60).toString().padStart(2,"0")+":"+(current_time%60).toString().padStart(2,"0");
+}
 const TimeStamp = () => {
     const [current_Time, setTime] = useState("");
     useEffect(() => {
@@ -33,6 +37,22 @@ const TimeStamp = () => {
         </div>
     );
 };
+const CreatechatClient = ({type,message,time,emotion,question,answer}) => {
+    if(type=="client"){
+        return(
+            <div className="chat_left_container">
+                <div className="chat_right_client">{message}</div>
+            </div>
+        )
+    }
+    else if(type=="counselor"){
+        return(
+            <div className="chat_right_container">
+                <div className="chat_left_counselor">{message}</div>
+            </div>
+        )
+    }
+}
 var stun_config ={
     'iceServers': [
         {
@@ -55,6 +75,8 @@ const CustomerMainPage = () => {
     const userEmail=location.state.Email;
     const [current_mode, setMode] = useState(2);
     const [consultingData, setData] = useState([]);
+    const [enters, setEnters]=useState([]);
+    const [cur_time,setCurTime] = useState(0);
     const SetButtonFunction2 = () => {
         setMode(2);
         document
@@ -208,6 +230,12 @@ const CustomerMainPage = () => {
             </div>
         )
     }
+    useEffect(()=>{
+        const myInterval = setInterval(() => {
+            setCurTime(cur_time+1);
+        }, 1000);
+        return() => clearInterval(myInterval);
+    }, []);
     var LoadingToggleSelect= useRef(0);
     var ROOM_NUMBER_CONSIST=useRef();
     var isStompDisconnected=useRef(0);
@@ -262,13 +290,35 @@ const CustomerMainPage = () => {
         }
         else{
             return (
-                
+                <div className="center_inner_box">
+                    <div className="center_inner_top_box">
+                        <div className="calling_time_bar"><ShowCurTime current_time={cur_time}/></div>
+                        <button className="calling_end_btn">상담 종료</button>
+                    </div>
+                    <div className="center_inner_bottom_box">
+                    <div className="chatting_grid" id="scrollDown">
+                        {
+                            enters.map((tmp) => (
+                                    < CreatechatClient
+                                        type={tmp.type}
+                                        message={tmp.message}
+                                        time={tmp.time}
+                                        emotion={tmp.emotion}
+                                        question={tmp.question}
+                                        answer={tmp.answer}/>
+                                ))
+                        }
+                        </div>
+                    </div>
+                </div>
+                /*
                 <div className="center_inner_box">HELLO
                 <div className="center_inner_box" onClick={TurnONMedia}>APPLE</div>
                 <div className="center_inner_box" onClick={TestTurnOFfMedia}>Banana</div>
                 <div className="center_inner_box" onClick={ConsultingEnd}>Color</div>
                  <audio id="userAudio" autoPlay="autoPlay" playsInline="playsInline"></audio>
                 </div>
+                */
             )
         }
     }

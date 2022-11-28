@@ -15,7 +15,7 @@ function App() {
       <Route path='/counselormain' element={<CounselorMainPage/>}/>
       <Route path='/counselor/room/:id' element={<Room/>}/>
       <Route path='/test' element={<Test/>}/>
-      <Route path='/after_counselor_record' element={<AfterCounselor/>}/>
+      <Route path='/counselor/after/room/:id' element={<AfterCounselor/>}/>
     </Routes>
     </div>
   );

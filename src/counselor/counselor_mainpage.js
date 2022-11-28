@@ -39,6 +39,7 @@ const CreateEmotionChange = ({type,message,time,emotion,question,answer}) => {
 function Mode1GrayBox ({end,clientName,start,counselorName,time, id}){
     const [timecheck, settimeCheck] = useState("");
     const [thistime, setthistime] = useState("");
+    const navigate=useNavigate();
     useEffect(()=>{let yyyy = start.substring(0, 4);
         let mm = start.substring(5, 7);
         let dd = start.substring(8, 10);
@@ -71,7 +72,15 @@ function Mode1GrayBox ({end,clientName,start,counselorName,time, id}){
     ,[])
     
     return (
-        <div className="mode1_grid_gray_box">
+        <div className="mode1_grid_gray_box" onClick={() => navigate('/counselor/after/room/'+id, {
+            state: {
+                id:id,
+                counselorName: counselorName,
+                clientName: clientName,
+                start:start,
+                time:time
+            }
+        })}>
             {timecheck}  ({thistime})
         </div>
     )
@@ -81,11 +90,18 @@ function TodayCallTTime ({time}){
     if(tmp<60) return " "+tmp + "초"
     else return " "+parseInt(tmp/60)+"분 "+tmp%60 + "초"
 }
+function TodayCallCaa ({count}){
+    return " "+count+"건";
+}
+function TodayCallPPP ({count}){
+    return " "+count+"명";
+}
 const Mode1 = () => {
     const [today_info,setTodayInfo]= useState(0);
     const [Mode1_data,setMode1Data]=useState([]);
     const [happy_word,setHappy] = useState();
     const [angry_word,setAngry] = useState();
+    const [waiting_people, setWaitPeople] = useState(0);
     useEffect(()=> {
         var tmp=[];
         var tmps = [];
@@ -127,24 +143,28 @@ const Mode1 = () => {
         .then((response)=> {
             setAngry(response.data);
         })
+        axios.get(URLsetting.LOCAL_API_URL+"consulting/waitClient")
+        .then((response)=>{
+            setWaitPeople(response.data);
+        })
     },[])
     return (
         <> < div className = "center_top" > <div className="text_box">
-            <p className="center_top_text" id="todayCallCount">오늘 상담 건수
-                <span className="variable_bold" id="today_call_count">{today_info.count}</span>
-                건</p>
+            <p className="center_top_text" id="todayCallCount">오늘 상담 건수 
+                <span className="variable_bold" id="today_call_count"><TodayCallCaa count={today_info.count}/></span>
+                </p>
             <p className="center_top_text" id="todayCallTime">오늘 상담 시간
                 <span className="variable_bold" id="today_call_time"><TodayCallTTime time={today_info.time}/></span>
             </p>
             <p className="center_top_text" id="todayCallTime">대기 고객
-                <span className="variable_bold" id="waiting_customer_count"></span>
-                명</p>
+                <span className="variable_bold" id="waiting_customer_count"><TodayCallPPP count={waiting_people}/></span>
+                </p>
         </div>
     </div>
     <div className="line"></div>
     <div className="center_bottom">
         <div className="call_record_list_box">
-            <p className="bigText">상담 내역</p>
+            <p className="bigText">최근 상담 내역</p>
             <div className="mode1_grid">
             {
                         Mode1_data.map((tmp) => (
@@ -163,13 +183,13 @@ const Mode1 = () => {
         <div className="todayKeyword">
             <div className="happy_todayKeyword">
                 <p className="emotion_wordcloue_text">happy</p>
-                <div className="wordcloud_img_main">
-                <img src={`data:image/jpeg;base64,${happy_word}`} alt="My Image" className="wordcloud_img" width="5px" height="5px"></img>
+                <div className="wordcloud_img_main_happy">
+                <img src={`data:image/jpeg;base64,${happy_word}`} alt="My Image" className="wordcloud_img" ></img>
                 </div>
             </div>
             <div className="angry_todayKeyword">
                 <p className="emotion_wordcloue_text">angry</p>
-                <div className="wordcloud_img_main">
+                <div className="wordcloud_img_main_angry">
                 <img src={`data:image/jpeg;base64,${angry_word}`} alt="My Image" className="wordcloud_img"></img>
                 </div>
             </div>
