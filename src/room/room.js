@@ -1,4 +1,4 @@
-import React, {useEffect, useState, Component, useRef, FontAwesomeIcon} from "react";
+import React, {useEffect, useState, Component, useRef} from "react";
 import {useNavigate} from "react-router-dom";
 import "../counselor/counselor_mainpage.css";
 import "../room/room.css";
@@ -9,7 +9,9 @@ import SockJS from "sockjs-client";
 import Stomp, { client } from "webstomp-client";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { WavRecorder } from "webm-to-wav-converter";
-
+import { faMeh,faAngry, faSmile } from "@fortawesome/free-regular-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { watchStreamAudioLevel } from 'stream-audio-level'
 var stun_config ={
     'iceServers': [
         {
@@ -31,17 +33,31 @@ const toggleClass = () => {
 }
 
 const Createchat = ({type,message,time,emotion,question,answer}) => {
+    const [facetype,setFaceType] = useState(faMeh);
+    const [chatcolor,setChatColor] = useState("chat_normal");
+    useEffect(()=> {
+        if(emotion==="angry"){
+            setChatColor("chat_angry")
+            setFaceType(faAngry);
+        }
+        else if(emotion==="happy"){
+            setChatColor("chat_happy");
+            setFaceType(faSmile);
+        }
+    },[])
     if(type=="client"){
         return(
-            <div className="chat_container_left">
-                <div className="chat_left">{message}</div>
+            <div className="chat_left_container">
+                <FontAwesomeIcon icon={facetype} size="3x"/>
+                <div className={chatcolor}>{message}</div>
             </div>
         )
     }
     else if(type=="counselor"){
         return(
-            <div className="chat_container_right">
-                <div className="chat_right">{message}</div>
+            <div className="chat_right_container">
+                <div className={chatcolor}>{message}</div>
+                <FontAwesomeIcon icon={facetype} size="3x"/>
             </div>
         )
     }
@@ -58,180 +74,38 @@ const CreateEmotionChange = ({type,message,time,emotion,question,answer}) => {
         <div className="emotion_change_sentence">{message}</div>
     )
 }
-var ModelSample = [
-    {
-        "type": "client",
-        "message": "test111test111test111test111test111test111test111",
-        "time": 155555555,
-        "emotion" : "angry",
-        "question" : "dkdkdkdk",
-        "answer" : "bbbbbbbb",
-},
-{
-    "type": "counselor",
-    "message": "counselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselor",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "client",
-    "message": "test111",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "client",
-    "message": "test111",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "client",
-    "message": "test111",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "client",
-    "message": "test111",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "notice",
-    "message": "notice",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "client",
-    "message": "test111",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "counselor",
-    "message": "this_is_counselor",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "client",
-    "message": "test111",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
 
-]
-
-var ModelSample2 = [
-{
-    "type": "client",
-    "message": "counselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselor",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "counselor",
-    "message": "counselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselor",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "client",
-    "message": "d이거 왜 안돼",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "client",
-    "message": "test111",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "client",
-    "message": "test111",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "client",
-    "message": "test111",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "notice",
-    "message": "notice",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "client",
-    "message": "test111",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "counselor",
-    "message": "this_is_counselor",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "client",
-    "message": "test111",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-
-]
-
+const ShowQuestion = ({question}) => {
+    return question;
+}
+const ShowAnswer = ({answer}) => {
+    return answer;
+}
+const ShowVoiceSpeed = ({message}) => {
+    total_time+=(end_time-start_time);
+    let result = message.toString().replace(/ /g, '');
+    total_word+=result.length;
+    return parseInt(total_word/total_time).toString() + "음절/s";
+}
+var total_word=0;
+var total_time=0;
+var start_time=0;
+var end_time=0;
+function ShowVoiceLevel ({level}){
+    if(level<10)return "낮음";
+    else if(level<40) return "적정"
+    else return "높음"
+}
 const Room = () => {
+    const [voiceLevel, setVoiceLevel] = useState(0); 
+    const isMikeOpen = useRef(false);
+    const [current_message,setCurrentMessage]= useState(0);
     const location = useLocation();
     const roomID = location.state.Room;
     const senderID= location.state.Id;
     const [enters, setEnters]=useState([]);
     const [enters2, setEnters2]=useState([]);
+    const [question,setQuestion] = useState(0);
     const addValue=()=>{
         var textValue={
             "type": "client",
@@ -246,12 +120,11 @@ const Room = () => {
     const TurnONMedia = () => {
         mediaRecorder.start();
         console.log("start!");
-    }
-    const Donwload = () => {
-        setTimeout(function () {mediaRecorder.download()},1);
+        start_time=Math.floor(new Date().getTime() / 1000);
     }
     const TestTurnOFfMedia = () => {
         mediaRecorder.stop();
+        end_time=Math.floor(new Date().getTime() / 1000);
         const p = new Promise((resolve,reject) => {
             setTimeout(function(){resolve(mediaRecorder.getBlob())},1)
         })
@@ -262,14 +135,18 @@ const Room = () => {
         reader.readAsDataURL(msg);
         reader.onloadend = () => {
             base64data = reader.result;
-            
             let body = {
                 roomId: roomID,
                 from: "counselor",
-                time: 1669302000,
+                time: Math.floor(new Date().getTime()),
                 encodeStr : base64data
             };
-            axios.post(URLsetting.LOCAL_API_URL+"main/addText", JSON.stringify(body), {
+            axios.post(URLsetting.LOCAL_API_URL+"main/addText", {
+                roomId: roomID,
+                from: "counselor",
+                time: Math.floor(new Date().getTime()),
+                encodeStr : base64data
+            }, {
                 headers: {
                     "Content-Type": 'application/json'
                 }
@@ -279,13 +156,10 @@ const Room = () => {
        //setTimeout(function(){console.log(blob)},3);
     
     }
-console.log(ModelSample.length);
     var flag=0;
     const [mediaRecorder,setMediaRecorder] = useState();
     let remoteVideo = new MediaStream();
     useEffect(()=>{
-        setEnters(ModelSample);
-        setEnters2(ModelSample2);
         remoteVideo = document.getElementById('userAudio');
         const pc = new RTCPeerConnection({configuration: URLsetting.MEDIACONSTRAINTS,stun_config});
         (async () => {
@@ -294,6 +168,11 @@ console.log(ModelSample.length);
                 .getUserMedia({audio: true, video: false})
                 .then(stream => {
                     setMediaRecorder(new WavRecorder(stream));
+                    setTimeout(
+                        watchStreamAudioLevel(stream, (v)=> {
+                            setVoiceLevel(parseInt(v));
+                        })
+                    ,100)
                     stream
                         .getTracks()
                         .forEach(track => pc.addTrack(track, stream));
@@ -315,6 +194,12 @@ console.log(ModelSample.length);
         pc.addEventListener('track', async (event) => {
             const [remoteStream] = event.streams;
             remoteVideo.srcObject = remoteStream;
+        })
+        pc.addEventListener("connectionstatechange",(event)=>{
+            if(pc.iceConnectionState=="connected"){
+                console.log(pc.iceConnectionState);
+                stomp.send("/pub/success");
+            }
         })
         stomp.connect({}, function (frame) {
             console.log("haha");
@@ -338,12 +223,26 @@ console.log(ModelSample.length);
                         if (tmp.data) {
                             if(flag){
                                     pc.addIceCandidate(tmp.data);
-                                console.log("ICE State: " + pc.iceConnectionState);
                             }
                         }
                     }
                     else if(tmp.type == "counselor" || tmp.type == "client" ||
                     tmp.type == "notice"){
+
+                        axios.get(URLsetting.LOCAL_API_URL+"main/angerPoint",{
+                            params: {
+                                roomId:roomID
+                            }
+                        })
+                        .then((response)=>{
+                            console.log(response.data);
+                            setEnters2(response.data);
+                        })
+                        if(tmp.question !==''){
+                            //질문 및 답변 처리
+                            setQuestion(tmp.question);
+                        }
+                        setCurrentMessage(tmp.message);
                         setEnters(enters => [...enters, tmp]);
                     }
                     else if(tmp.message=="reload anger starting point"){
@@ -361,15 +260,16 @@ console.log(ModelSample.length);
     
     return(
         <div className="calling_center">
+             <audio id="userAudio" autoPlay="autoPlay" playsInline="playsInline"></audio>
             <div className="calling_center_top">
                 <div className="calling_center_top_left">
-                    <div className="left1" onClick={Donwload}><p className="left1_text">고객 감정</p><p className="emotion"></p></div>
-                    <div className="left2"><p className="left2_text" onClick={TurnONMedia}>목소리 크기<p className="volume"></p><p className="volume_db"></p></p></div>
-                    <div className="left3"><p className="left3_text" onClick={TestTurnOFfMedia}>말 빠르기<p className="speed"></p><p className="speed_s_m"></p></p></div>
+                    <div className="left1"><p className="left1_text">고객 감정</p><p className="emotion"></p></div>
+                    <div className="left2"><p className="left2_text" onClick={TurnONMedia}>목소리 크기 <ShowVoiceLevel level={voiceLevel}/><p className="volume"></p><p className="volume_db"></p></p></div>
+                    <div className="left3"><p className="left3_text" onClick={TestTurnOFfMedia}>말 빠르기 <ShowVoiceSpeed message = {current_message}/><p className="speed"></p><p className="speed_s_m"></p></p></div>
                 </div>
                 <div className="calling_center_top_right">
                     <div className="calling_center_top_right_question">
-                        <p className="right1">Q. 주문 취소는 어떻게 해야 하나요?</p>
+                        <p className="right1">Q. {question}</p>
                     </div>
                     <div className="calling_center_top_right_answer">
                     <div className="right2">
@@ -409,7 +309,7 @@ console.log(ModelSample.length);
                     <div className="changeEmotion">
                         <div className="emotion_change_grid">
                         {
-                            enters.map((tmp) => (
+                            enters2.map((tmp) => (
                                     < CreateEmotionChange
                                         type={tmp.type}
                                         message={tmp.message}

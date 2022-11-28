@@ -4,18 +4,30 @@ import "./counselor_mainpage.css";
 import axios from "axios";
 import {useLocation} from "react-router-dom";
 import URLsetting from "../Setting/URLsetting";
+import { faMeh,faAngry, faSmile } from "@fortawesome/free-regular-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+
 const Createchat = ({type,message,time,emotion,question,answer}) => {
+    const [facetype,setFaceType] = useState(faMeh);
+    useEffect(()=> {
+        if(emotion==="angry")setFaceType(faAngry);
+        else if(emotion==="happy")setFaceType(faSmile);
+    },[])
     if(type=="client"){
         return(
-            <div className="chat_container_left">
-                <div className="chat_left">{message}</div>
+            <div className="chat_left_container">
+                 <FontAwesomeIcon icon={facetype} size="3x"/>
+                <div className="chat_left">
+                    {message}
+                    </div>
             </div>
         )
     }
     else if(type=="counselor"){
         return(
-            <div className="chat_container_right">
+            <div className="chat_right_container">
                 <div className="chat_right">{message}</div>
+                <FontAwesomeIcon icon={facetype} size="3x"/>
             </div>
         )
     }
@@ -30,7 +42,7 @@ var ModelSample = [
         "type": "client",
         "message": "test111test111test111test111test111test111test111",
         "time": 155555555,
-        "emotion" : "angry",
+        "emotion" : "happy",
         "question" : "dkdkdkdk",
         "answer" : "bbbbbbbb",
 },
@@ -38,7 +50,7 @@ var ModelSample = [
     "type": "counselor",
     "message": "counselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselor",
     "time": 155555555,
-    "emotion" : "angry",
+    "emotion" : "happy",
     "question" : "dkdkdkdk",
     "answer" : "bbbbbbbb",
 },
@@ -62,7 +74,7 @@ var ModelSample = [
     "type": "client",
     "message": "test111",
     "time": 155555555,
-    "emotion" : "angry",
+    "emotion" : "happy",
     "question" : "dkdkdkdk",
     "answer" : "bbbbbbbb",
 },
@@ -117,25 +129,41 @@ function Mode1GrayBox ({start,end,time,id,people}){
     )
 }
 const Mode1 = () => {
+    const [today_info,setTodayInfo]= useState(0);
     const [Mode1_data,setMode1Data]=useState([]);
     useEffect(()=> {
         axios
-        .get(URLsetting.LOCAL_API_URL+"consulting/list", {
+        .get(URLsetting.LOCAL_API_URL+"consulting/records/counselor", {
             params: {
-                clientID: "cmoh4135"
+                clientID: userID
             }
         })
         .then((response) => {
+            console.log(response.data);
             setMode1Data(response.data);
+        })
+        axios.get(URLsetting.LOCAL_API_URL+"consulting/counselorInfo/today", {
+            params: {
+                id: userID
+            }
+        })
+        .then((response)=> {
+            console.log(response.data);
+            setTodayInfo(response.data);
+        })
+        axios.get(URLsetting.LOCAL_API_URL+"main/today/Keyword/angry", {
+
+        }).then((response)=> {
+            console.log(response.data)
         })
     },[])
     return (
         <> < div className = "center_top" > <div className="text_box">
             <p className="center_top_text" id="todayCallCount">오늘 상담 건수
-                <span className="variable_bold" id="today_call_count"></span>
+                <span className="variable_bold" id="today_call_count">{today_info.count}</span>
                 건</p>
             <p className="center_top_text" id="todayCallTime">오늘 상담 시간
-                <span className="variable_bold" id="today_call_time"></span>
+                <span className="variable_bold" id="today_call_time">{today_info.time}</span>
             </p>
             <p className="center_top_text" id="todayCallTime">대기 고객
                 <span className="variable_bold" id="waiting_customer_count"></span>
@@ -234,7 +262,7 @@ const Mode2 = () =>{
         var toggler = document.querySelector('.toggle-switch');
         toggler.classList.toggle('active');
     }
-    
+    /*
    return(
     <div className="after_calling_center">
         <div className="after_calling_center_bars">
@@ -295,8 +323,7 @@ const Mode2 = () =>{
             </div>
     </div> 
    )
-   
-  /*
+   */
    return (
     <>
     <div className="mode2_top">
@@ -316,7 +343,7 @@ const Mode2 = () =>{
     }
     </div>
     </>
-)*/
+)
 }
 var userName;
 var userID;

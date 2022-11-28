@@ -7,7 +7,7 @@ import Spinner from "../assets/spinner5.gif";
 import URLsetting from "../Setting/URLsetting";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
-
+import { WavRecorder } from "webm-to-wav-converter";
 const TimeStamp = () => {
     const [current_Time, setTime] = useState("");
     useEffect(() => {
@@ -255,14 +255,52 @@ const CustomerMainPage = () => {
         }
         else{
             return (
-                <div className="center_inner_box">HELLO</div>
+                
+                <div className="center_inner_box">HELLO
+                <div className="center_inner_box" onClick={TurnONMedia}>APPLE</div>
+                <div className="center_inner_box" onClick={TestTurnOFfMedia}>Banana</div>
+                 <audio id="userAudio" autoPlay="autoPlay" playsInline="playsInline"></audio>
+                </div>
             )
         }
     }
+    const TurnONMedia = () => {
+        mediaRecorder.start();
+        console.log("start!");
+    }
+    const TestTurnOFfMedia = () => {
+        mediaRecorder.stop();
+        const p = new Promise((resolve,reject) => {
+            setTimeout(function(){resolve(mediaRecorder.getBlob())},1)
+        })
+        p.then(msg=>{
+            let reader = new FileReader();
+        let base64data;
+        console.log(msg);
+        reader.readAsDataURL(msg);
+        reader.onloadend = () => {
+            base64data = reader.result;
+            axios.post(URLsetting.LOCAL_API_URL+"main/addText", {
+                roomId: ROOM_NUMBER_CONSIST.current,
+                from: "client",
+                time: Math.floor(new Date().getTime() / 1000),
+                encodeStr : base64data
+            }, {
+                headers: {
+                    "Content-Type": 'application/json'
+                }
+            })
+        }
+        })
+       //setTimeout(function(){console.log(blob)},3);
+    
+    }
+    var mediaRecorder;
     const Loading = () => {
         var flag=0;
         let remoteVideo = new MediaStream();
         useEffect(()=> {
+            remoteVideo = document.getElementById('userAudio');
             axios.get(URLsetting.LOCAL_API_URL+"consulting/create")
             .then((response)=> {
                 const pc = new RTCPeerConnection(
@@ -284,6 +322,7 @@ const CustomerMainPage = () => {
                         .mediaDevices
                         .getUserMedia({audio: true, video: false})
                         .then(stream => {
+                            mediaRecorder= new WavRecorder(stream);
                             stream
                                 .getTracks()
                                 .forEach(track => pc.addTrack(track, stream));
@@ -302,6 +341,7 @@ const CustomerMainPage = () => {
                     if(pc.iceConnectionState=="connected"){
                         console.log(pc.iceConnectionState);
                         LoadingToggleSelect.current=1;
+                        stomp.send("/pub/success");
                     }
                 })
                 stomp.connect({}, function () {
