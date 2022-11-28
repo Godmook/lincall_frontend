@@ -291,7 +291,7 @@ const CustomerMainPage = () => {
             axios.post(URLsetting.LOCAL_API_URL+"main/addText", {
                 roomId: ROOM_NUMBER_CONSIST.current,
                 from: "client",
-                time: Math.floor(new Date().getTime() / 1000),
+                time: Math.floor(new Date().getTime()),
                 encodeStr : base64data
             }, {
                 headers: {

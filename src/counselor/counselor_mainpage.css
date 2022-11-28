@@ -302,7 +302,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    height: 100%;
+    height: 67%;
     width: 100%;
 }
 .v-line {
@@ -313,7 +313,7 @@
 }
 .call_record_list_box{
     display: flex;
-    width: 40%;
+    width: 100%;
     height: 100%;
     flex-direction: column;
 }
@@ -325,7 +325,20 @@
 }
 .todayKeyword{
     display: flex;
-    width: 50%;
+    width: 100%;
+    height: 90%;
+    flex-direction: column;
+}
+.happy_todayKeyword{
+    display: flex;
+    width: 100%;
+    height: 50%;
+    flex-direction: column;
+}
+.angry_todayKeyword{
+    display: flex;
+    width: 100%;
+    height: 50%;
     flex-direction: column;
 }
 .wordcloud{
@@ -458,9 +471,10 @@
     width: 100%;
     height: 26%;
     border-radius: 1em;
-    justify-content:center;
     padding: 7px;
-    align-items: center;
+    display:flex;
+    align-items:center; /* 방향이 row 기준: 세로 중앙 정렬*/
+    justify-content: space-between;
     /*border: 2px solid lightgray;*/
     /*box-shadow: 0 6px 6px rgba(0, 0, 0, 0.25);*/
 }
@@ -469,9 +483,10 @@
     width: 100%;
     height: 26%;
     border-radius: 1em;
-    justify-content: center;
     padding: 7px;
-    align-items: center;
+    display:flex;
+    align-items:center; /* 방향이 row 기준: 세로 중앙 정렬*/
+    justify-content: space-between;
     /*border: 2px solid lightgray;*/
     /*box-shadow: 0 6px 6px rgba(0, 0, 0, 0.25);*/
 }
@@ -481,8 +496,10 @@
     width: 100%;
     height: 26%;
     border-radius: 1em;
-    justify-content: center;
+    display:flex;
+    align-items:center; /* 방향이 row 기준: 세로 중앙 정렬*/
     padding: 7px;
+    justify-content: space-between;
     /*border: 2px solid lightgray;*/       
     /*box-shadow: 0 6px 6px rgba(0, 0, 0, 0.25);*/
 }
@@ -490,16 +507,20 @@
     font-size: large;
     font-weight: bold;
     padding: 5px;
+    display: inline-block;
+    margin-left: 30px;
 }
 .left2_text{
     font-size: large;
     font-weight: bold;
     padding: 5px;
+    margin-left: 30px;
 }
 .left3_text{
     font-size: large;
     font-weight: bold;
     padding: 5px;
+    margin-left: 30px;
 }
 .calling_center_top_right_question{
     background-color: #cdedff;
@@ -540,6 +561,8 @@ body{
     transition: 0.4s;
     width: 100%;
     padding-left: 15px;
+    display:flex;
+    align-items:center; /* 방향이 row 기준: 세로 중앙 정렬*/
 }
 .search_box:hover{
     box-shadow: 0px 0px .5px 1px #8dd0f7;
@@ -563,7 +586,7 @@ body{
     background-color: rgb(210, 255, 210);
     margin: 15px;
 }
-.buttonMame{
+.buttonName{
     font-size: 20px;
     font-style: normal;
     font-weight: 1000;
@@ -847,4 +870,24 @@ a {
     right: -15px;
     content: "▶";
     color: #F9EB54;
+}
+
+.emotion{
+    margin-right: 80px;
+    font-size: 20px;
+    font-weight: bold;
+}
+.volume{
+    margin-right: 80px;
+    font-size: 20px;
+    font-weight: bold;
+}
+.speed{
+    margin-right: 80px;
+    font-size: 20px;
+    font-weight: bold;
+}
+.wordcloud_img_main{
+    width:100%;
+    height:100%;
 }

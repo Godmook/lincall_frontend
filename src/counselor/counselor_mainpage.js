@@ -6,7 +6,6 @@ import {useLocation} from "react-router-dom";
 import URLsetting from "../Setting/URLsetting";
 import { faMeh,faAngry, faSmile } from "@fortawesome/free-regular-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-
 const Createchat = ({type,message,time,emotion,question,answer}) => {
     const [facetype,setFaceType] = useState(faMeh);
     useEffect(()=> {
@@ -37,109 +36,78 @@ const CreateEmotionChange = ({type,message,time,emotion,question,answer}) => {
         <div className="emotion_change_sentence">{message}</div>
     )
 }
-var ModelSample = [
-    {
-        "type": "client",
-        "message": "test111test111test111test111test111test111test111",
-        "time": 155555555,
-        "emotion" : "happy",
-        "question" : "dkdkdkdk",
-        "answer" : "bbbbbbbb",
-},
-{
-    "type": "counselor",
-    "message": "counselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselorcounselor",
-    "time": 155555555,
-    "emotion" : "happy",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "client",
-    "message": "test111",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "client",
-    "message": "test111",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "client",
-    "message": "test111",
-    "time": 155555555,
-    "emotion" : "happy",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "client",
-    "message": "test111",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "notice",
-    "message": "notice",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "client",
-    "message": "test111",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "counselor",
-    "message": "this_is_counselor",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-{
-    "type": "client",
-    "message": "test111",
-    "time": 155555555,
-    "emotion" : "angry",
-    "question" : "dkdkdkdk",
-    "answer" : "bbbbbbbb",
-},
-
-]
-function Mode1GrayBox ({start,end,time,id,people}){
+function Mode1GrayBox ({end,clientName,start,counselorName,time, id}){
+    const [timecheck, settimeCheck] = useState("");
+    const [thistime, setthistime] = useState("");
+    useEffect(()=>{let yyyy = start.substring(0, 4);
+        let mm = start.substring(5, 7);
+        let dd = start.substring(8, 10);
+        let hour = start.substring(11, 13);
+        let minute = start.substring(14, 16);
+        let sec = start.substring(17);
+    
+        let hour2 = end.substring(11, 13);
+        let minute2 = end.substring(14, 16);
+        let sec2 = end.substring(17);
+    
+        settimeCheck(
+            yyyy + "." + mm + "." + dd + ". " + hour + ":" + minute
+        )
+    
+        let hour3 = time.substring(0, 2);
+        let minute3 = time.substring(3, 5);
+        let sec3 = time.substring(6);
+        if (hour3 == "00") {
+            if (minute3 == "00") {
+                setthistime(parseInt(sec3) + "초");
+            } else {
+                setthistime(parseInt(minute3) + "분 " + parseInt(sec3) + "초");
+            }
+        } else {
+            setthistime(
+                parseInt(hour3) + "시간" + parseInt(minute3) + "분 " + parseInt(sec3) + "초"
+            );
+        }}
+    ,[])
+    
     return (
         <div className="mode1_grid_gray_box">
-            {start}
-            {people}
+            {timecheck}  ({thistime})
         </div>
     )
+}
+function TodayCallTTime ({time}){
+    var tmp= parseInt(time/1000);
+    if(tmp<60) return " "+tmp + "초"
+    else return " "+parseInt(tmp/60)+"분 "+tmp%60 + "초"
 }
 const Mode1 = () => {
     const [today_info,setTodayInfo]= useState(0);
     const [Mode1_data,setMode1Data]=useState([]);
+    const [happy_word,setHappy] = useState();
+    const [angry_word,setAngry] = useState();
     useEffect(()=> {
+        var tmp=[];
+        var tmps = [];
+        var tmp1=[];
+            axios.get(URLsetting.LOCAL_API_URL+"main/todayKeyword/angry").then((response)=> {
+                tmp=response.data;
+                for(var i=0;i<tmp.length;i++){
+                    tmp1.push(tmp[i]);
+                    tmp1.push(1);
+                    tmps.push(tmp1);
+                    tmp1=[];
+                }
+                setAngry(tmps);
+            })  
         axios
         .get(URLsetting.LOCAL_API_URL+"consulting/records/counselor", {
             params: {
-                clientID: userID
+                id: userID
             }
         })
         .then((response) => {
-            console.log(response.data);
+            console.log("tset",response.data)
             setMode1Data(response.data);
         })
         axios.get(URLsetting.LOCAL_API_URL+"consulting/counselorInfo/today", {
@@ -151,10 +119,13 @@ const Mode1 = () => {
             console.log(response.data);
             setTodayInfo(response.data);
         })
-        axios.get(URLsetting.LOCAL_API_URL+"main/today/Keyword/angry", {
-
-        }).then((response)=> {
-            console.log(response.data)
+        axios.get(URLsetting.LOCAL_API_URL+"main/todayKeyword/happy")
+        .then((response)=> {
+            setHappy(response.data);
+        })
+        axios.get(URLsetting.LOCAL_API_URL+"main/todayKeyword/angry")
+        .then((response)=> {
+            setAngry(response.data);
         })
     },[])
     return (
@@ -163,7 +134,7 @@ const Mode1 = () => {
                 <span className="variable_bold" id="today_call_count">{today_info.count}</span>
                 건</p>
             <p className="center_top_text" id="todayCallTime">오늘 상담 시간
-                <span className="variable_bold" id="today_call_time">{today_info.time}</span>
+                <span className="variable_bold" id="today_call_time"><TodayCallTTime time={today_info.time}/></span>
             </p>
             <p className="center_top_text" id="todayCallTime">대기 고객
                 <span className="variable_bold" id="waiting_customer_count"></span>
@@ -178,21 +149,30 @@ const Mode1 = () => {
             {
                         Mode1_data.map((tmp) => (
                             <Mode1GrayBox
-                                start={tmp.start}
                                 end={tmp.end}
+                                clientName={tmp.clientName}
+                                start={tmp.start}
+                                counselorName={tmp.counselorName}
                                 time={tmp.time}
-                                id={tmp.id}
-                                people={tmp.counselorName}/>
+                                id={tmp.id}/>
                         ))
                     }
             </div>
         </div>
         <div className='v-line'></div>
         <div className="todayKeyword">
-            <p className="emotion_wordcloue_text">happy</p>
-            <div className="word_cloud" id="positive_wordcloud">좋아용</div>
-            <p className="emotion_wordcloue_text">angry</p>
-            <div className="word_cloud" id="negative_wordcloud">안좋아요</div>
+            <div className="happy_todayKeyword">
+                <p className="emotion_wordcloue_text">happy</p>
+                <div className="wordcloud_img_main">
+                <img src={`data:image/jpeg;base64,${happy_word}`} alt="My Image" className="wordcloud_img" width="5px" height="5px"></img>
+                </div>
+            </div>
+            <div className="angry_todayKeyword">
+                <p className="emotion_wordcloue_text">angry</p>
+                <div className="wordcloud_img_main">
+                <img src={`data:image/jpeg;base64,${angry_word}`} alt="My Image" className="wordcloud_img"></img>
+                </div>
+            </div>
         </div>
     </div>
 </>
@@ -214,7 +194,6 @@ function GetDiffTime ({aa}){
 function MakeWaitingList ({room,client, counselor, clientName,counselorName, time}){
     const navigate=useNavigate();
     const cur_style=useRef("waiting_list_bar1");
-    console.log(room+clientName);
     if(client!=="null" && counselor===null){
     return (
         <div className={cur_style.current} onClick={() => navigate('/counselor/room/'+room, {
@@ -242,7 +221,6 @@ const Mode2 = () =>{
     const [ntImg, setNegativeImg] = useState();
     const [enters, setEnters]=useState([]);
     useEffect(()=> {
-        setEnters(ModelSample);
         axios.get(URLsetting.LOCAL_API_URL+"consulting/room-list")
         .then((response)=> {
             setRoomNumber(response.data);
@@ -362,7 +340,6 @@ const CounselorMainPage = () => {
     const leftbar_backgroundcolor = (number) => {
         for (var i = 1; i < 6; i++) {
             var tmp = "select" + i;
-            console.log(tmp);
             if (i != number) {
                 document
                     .getElementById(tmp)
