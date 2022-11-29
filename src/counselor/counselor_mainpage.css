@@ -590,12 +590,6 @@ body{
     line-height: 30px;
     transition: .4s;
 }
-.chatting{
-    width: 95%;
-    height: 90%;
-    background-color: transparent;
-    margin: 15px;
-}
 .buttonName{
     font-size: 20px;
     font-style: normal;
@@ -710,7 +704,7 @@ body{
     border-radius: 2em;
     flex-direction: column;
     align-items:flex-start;
-    justify-content: space-start;
+    justify-content: center;
     padding: 15px;
 }
 .after_search_box{
@@ -903,7 +897,7 @@ a {
     justify-content: space-around;
     display: flex;
     align-items: center;
-    background-color: #c6e6f7;
+    background-color: #e2f5ff;
     border-radius: 20px;
 }
 .wordcloud_img_main_angry{
@@ -912,6 +906,6 @@ a {
     justify-content: space-around;
     display: flex;
     align-items: center;
-    background-color: #faa6a0;
+    background-color: #fddfdd;
     border-radius: 20px;
 }

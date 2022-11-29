@@ -133,7 +133,6 @@ const Mode1 = () => {
             }
         })
         .then((response)=> {
-            console.log(response.data);
             setTodayInfo(response.data);
         })
         axios.get(URLsetting.LOCAL_API_URL+"main/todayKeyword/happy")
@@ -245,7 +244,6 @@ const Mode2 = () =>{
         axios.get(URLsetting.LOCAL_API_URL+"consulting/room-list")
         .then((response)=> {
             setRoomNumber(response.data);
-            console.log(response.data);
         })
         axios
             .get(URLsetting.LOCAL_API_URL+"consulting/wordcloud/angry", {
@@ -378,7 +376,6 @@ const CounselorMainPage = () => {
             }
         }
         setMode(number);
-        console.log(number);
     }
     function ModeChange() {
         if (current_mode == 1) {
