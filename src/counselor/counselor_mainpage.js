@@ -78,7 +78,9 @@ function Mode1GrayBox ({end,clientName,start,counselorName,time, id}){
                 counselorName: counselorName,
                 clientName: clientName,
                 start:start,
-                time:time
+                time:time,
+                email:userEmail,
+                ccid:userID
             }
         })}>
             {timecheck}  ({thistime})
@@ -123,7 +125,6 @@ const Mode1 = () => {
             }
         })
         .then((response) => {
-            console.log("tset",response.data)
             setMode1Data(response.data);
         })
         axios.get(URLsetting.LOCAL_API_URL+"consulting/counselorInfo/today", {
@@ -182,13 +183,13 @@ const Mode1 = () => {
         <div className='v-line'></div>
         <div className="todayKeyword">
             <div className="happy_todayKeyword">
-                <p className="emotion_wordcloue_text">happy</p>
+                <div className="emotion_wordcloue_text">오늘의 긍정 키워드</div>
                 <div className="wordcloud_img_main_happy">
                 <img src={`data:image/jpeg;base64,${happy_word}`} alt="My Image" className="wordcloud_img" ></img>
                 </div>
             </div>
             <div className="angry_todayKeyword">
-                <p className="emotion_wordcloue_text">angry</p>
+                <div className="emotion_wordcloue_text">오늘의 부정 키워드</div>
                 <div className="wordcloud_img_main_angry">
                 <img src={`data:image/jpeg;base64,${angry_word}`} alt="My Image" className="wordcloud_img"></img>
                 </div>

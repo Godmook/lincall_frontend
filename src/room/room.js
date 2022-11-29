@@ -105,7 +105,8 @@ const ShowVoiceSpeed = ({message}) => {
         return ""
     }
     else{
-    total_time+=(end_time-start_time);
+    let ttt= (end_time-start_time)/1000;
+    total_time+=ttt;
     let result = message.toString().replace(/ /g, '');
     total_word+=result.length;
     return parseInt(total_word/total_time).toString() + "음절/s";
@@ -128,60 +129,69 @@ function ShowVoiceLevel ({level}){
     }
 }
 }
+const TurnONMedia = () => {
+    mediaRecorder.start();
+    console.log("start!");
+    start_time=new Date().getTime();
+}
+const TestTurnOFfMedia = () => {
+    mediaRecorder.stop();
+    end_time=new Date().getTime();
+    total_time=end_time-start_time;
+    const p = new Promise((resolve,reject) => {
+        setTimeout(function(){resolve(mediaRecorder.getBlob())},1)
+    })
+    p.then(msg=>{
+        let reader = new FileReader();
+    let base64data;
+    console.log(msg);
+    reader.readAsDataURL(msg);
+    reader.onloadend = () => {
+        base64data = reader.result;
+        let body = {
+            roomId: roomID,
+            from: "counselor",
+            time: Math.floor(new Date().getTime()),
+            encodeStr : base64data
+        };
+        axios.post(URLsetting.LOCAL_API_URL+"main/addText", {
+            roomId: roomID,
+            from: "counselor",
+            time: Math.floor(new Date().getTime()),
+            encodeStr : base64data
+        }, {
+            headers: {
+                "Content-Type": 'application/json'
+            }
+        })
+    }
+    })
+   //setTimeout(function(){console.log(blob)},3);
+
+}
+const MakeAnswer = ({answer}) =>{
+    console.log(answer);
+    let tmp=""+answer;
+    console.log("sujung before",tmp);
+    tmp=tmp.replace(/\\n/g, '<br />');
+    console.log("after",tmp);
+    document.getElementById('InAnswer').innerHTML=tmp;
+}
+var mediaRecorder;
+var roomID
 const Room = () => {
     const [voiceLevel, setVoiceLevel] = useState(0); 
     const isMikeOpen = useRef(false);
     const [current_message,setCurrentMessage]= useState(0);
     const [current_emotion,setCurrentEmotion] = useState("평온");
     const location = useLocation();
-    const roomID = location.state.Room;
+    roomID = location.state.Room;
     const senderID= location.state.Id;
     const [enters, setEnters]=useState([]);
     const [enters2, setEnters2]=useState([]);
     const [question,setQuestion] = useState(0);
     const [answer,setAnswer] = useState("");
     const scrollRef = useRef();
-
-
-    const TurnONMedia = () => {
-        mediaRecorder.start();
-        console.log("start!");
-        start_time=Math.floor(new Date().getTime() / 1000);
-    }
-    const TestTurnOFfMedia = () => {
-        mediaRecorder.stop();
-        end_time=Math.floor(new Date().getTime() / 1000);
-        const p = new Promise((resolve,reject) => {
-            setTimeout(function(){resolve(mediaRecorder.getBlob())},1)
-        })
-        p.then(msg=>{
-            let reader = new FileReader();
-        let base64data;
-        console.log(msg);
-        reader.readAsDataURL(msg);
-        reader.onloadend = () => {
-            base64data = reader.result;
-            let body = {
-                roomId: roomID,
-                from: "counselor",
-                time: Math.floor(new Date().getTime()),
-                encodeStr : base64data
-            };
-            axios.post(URLsetting.LOCAL_API_URL+"main/addText", {
-                roomId: roomID,
-                from: "counselor",
-                time: Math.floor(new Date().getTime()),
-                encodeStr : base64data
-            }, {
-                headers: {
-                    "Content-Type": 'application/json'
-                }
-            })
-        }
-        })
-       //setTimeout(function(){console.log(blob)},3);
-    
-    }
     const isKeyDown = useRef(false);
     window.addEventListener("keydown", (e) => {
         if((e.key)==='Enter' && !isKeyDown.current){
@@ -194,7 +204,6 @@ const Room = () => {
         }
     });
     var flag=0;
-    const [mediaRecorder,setMediaRecorder] = useState();
     let remoteVideo = new MediaStream();
     useEffect(()=>{
         remoteVideo = document.getElementById('userAudio');
@@ -204,7 +213,7 @@ const Room = () => {
                 .mediaDevices
                 .getUserMedia({audio: true, video: false})
                 .then(stream => {
-                    setMediaRecorder(new WavRecorder(stream));
+                    mediaRecorder=new WavRecorder(stream);
                     stream
                         .getTracks()
                         .forEach(track => pc.addTrack(track, stream));
@@ -237,12 +246,13 @@ const Room = () => {
             console.log("haha");
             stomp.subscribe("/sub/room/" + roomID, function (msg) {
                 if ((msg.body).includes('join')) {} 
+                else if((msg.body).includes('consulting')){
+                    stomp.disconnect()
+                }
                 else if((msg.body).includes('activate')){
                     document.getElementById('userAudio').autoPlay="muted";
-                    if(($("#toggle-switch").is( ":hidden" ))){
                     var toggler = document.querySelector('.toggle-switch');
                     toggler.classList.toggle('active');
-                    }
                     let tmp={
                         type:"notice",
                         message:"지금부터 고객의 음성이 차단됩니다.",
@@ -287,11 +297,17 @@ const Room = () => {
                         }
                     }
                     else if(tmp.type == "counselor" || tmp.type == "client"){
-
-                        if(tmp.question !==''){
+                        console.log('a');
+                        if(tmp.question !=='' && tmp.type==="client"){
                             //질문 및 답변 처리
                             setQuestion(tmp.question);
-                            setAnswer(tmp.answer);
+                            const p= new Promise((resolve,reject) => {
+                                resolve(setAnswer(tmp.answer));
+                            })
+                            p.then(()=>{
+                                setTimeout(()=>{MakeAnswer(answer)},1);
+                            })
+
                         }
                         if(tmp.emotion==="angry")
                             setCurrentEmotion("화남");
@@ -337,8 +353,7 @@ const Room = () => {
                             <p className="right1">Q. {question}</p>
                         </div>
                         <div className="calling_center_top_right_answer">
-                        <div className="right2">
-                            {answer}
+                        <div className="right2" id="InAnswer">
                         </div>
                         </div>                    
                     </div>

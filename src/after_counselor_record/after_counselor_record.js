@@ -25,7 +25,8 @@ var stun_config ={
         },
     ]
 }
-const Createchat = ({type,message,time,emotion,question,answer}) => {
+const Createchat = ({type,time,emotion,text}) => {
+    console.log(type);
     const [facetype,setFaceType] = useState(faMeh);
     const [chatcolor,setChatColor] = useState("chat_normal");
     useEffect(()=> {
@@ -42,14 +43,14 @@ const Createchat = ({type,message,time,emotion,question,answer}) => {
         return(
             <div className="chat_left_container">
                 <FontAwesomeIcon icon={facetype} size="3x"/>
-                <div className={chatcolor}>{message}</div>
+                <div className={chatcolor}>{text}</div>
             </div>
         )
     }
     else if(type=="counselor"){
         return(
             <div className="chat_right_container">
-                <div className={chatcolor}>{message}</div>
+                <div className={chatcolor}>{text}</div>
                 <FontAwesomeIcon icon={facetype} size="3x"/>
             </div>
         )
@@ -57,7 +58,7 @@ const Createchat = ({type,message,time,emotion,question,answer}) => {
     else if(type=="notice"){
         return(
             <div className="chat_container_center">
-                <div className="chat_center">{message}</div>
+                <div className="chat_center">{text}</div>
             </div>
         )
     }
@@ -70,52 +71,54 @@ const AfterCounselor = () => {
     const clientName = location.state.clientName;
     const time = location.state.time;
     const Roomid= location.state.id;
+    const counselorID=location.state.ccid;
+    const counselorEmail = location.state.email;
     const [ptImg, setPositiveImg] = useState();
     const [ntImg, setNegativeImg] = useState();
-    const [talkmessage,setTalkmessage] = useState();
-    const [getangerpoint,setAngerPoint] = useState();
+    const [talkmessage,setTalkmessage] = useState([]);
+    const [getangerpoint,setAngerPoint] = useState([]);
+    const navigate = useNavigate();
     useEffect(()=>{
-        axios
+        axios.all([axios
             .get(URLsetting.LOCAL_API_URL+"consulting/wordcloud/angry", {
                 params: {
                     id: Roomid
                 }
-            })
-            .then((response) => {
-                setNegativeImg(response.data);
-            })
-            axios
+            }), axios
             .get(URLsetting.LOCAL_API_URL+"consulting/wordcloud/happy", {
                 params: {
                     id: Roomid
                 }
-            })
-            .then((response) => {
-                setPositiveImg(response.data);
-            })
-            axios.get(URLsetting.LOCAL_API_URL+"main/dialogue",{
+            }),axios.get(URLsetting.LOCAL_API_URL+"main/dialogue",{
                 params:{
                     roomId:Roomid
                 }
-            })
-            .then((response)=> {
-                setTalkmessage(response.data);
-                console.log(talkmessage);
-            })
-            axios.get(URLsetting.LOCAL_API_URL+"main/angerPoint",{
+            }), axios.get(URLsetting.LOCAL_API_URL+"main/angerPoint",{
                 params:{
                     roomId:Roomid
                 }
-            })
-            .then((response)=>{
-                setAngerPoint(response.data);
-                console.log(getangerpoint);
-            })
+            })])
+            .then(
+                axios.spread((res1,res2,res3,res4)=>{
+                    setNegativeImg(res1.data);
+                    setPositiveImg(res2.data);
+                    setTalkmessage(res3.data);
+                    setAngerPoint(res4.data);
+                })
+            )
+            console.log(talkmessage);
     },[])
     return(
         <div className="after_calling_center">
             <div className="after_calling_center_bars">
-                <button className="after_calling_go_back">back</button>
+                <button className="after_calling_go_back" onClick={()=>navigate('/counselormain',{
+                    state:{
+                        Name:counselorName,
+                        Id: counselorID,
+                        Email:counselorEmail
+
+                    }
+                })}>back</button>
                 <div className="after_calling_info_bar">
                     <p className="after_calling_info_text">상담 일시 : {start} {time}분</p>
                 </div>
@@ -137,8 +140,15 @@ const AfterCounselor = () => {
                             <input type="text" className="after_search_txt" name=""placeholder="검색할 것을 입력하세요 !"></input>
                         </div>
                         <div className="chatting">
-                            {
-
+                        {
+                                talkmessage.map((tmp)=>{
+                                    <Createchat
+                                        type={tmp.type}
+                                        time={tmp.time}
+                                        emotion={tmp.emotion}
+                                        text={tmp.text}
+                                        />
+                                })
                             }
                         </div>
                     </div>

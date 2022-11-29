@@ -372,7 +372,7 @@
     text-align: center;
     margin: 7px;
     font-size: 200%;
-    font-weight: normal;
+    font-weight: bold;
     font-style: normal;
     color: black;
     margin: 10px;
@@ -380,7 +380,7 @@
 .emotion_wordcloue_text{
     margin: 7px;
     font-size: 200%;
-    font-weight: normal;
+    font-weight: bold;
     font-style: normal;
     color: black;
     margin: 10px;
@@ -593,7 +593,7 @@ body{
 .chatting{
     width: 95%;
     height: 90%;
-    background-color: rgb(210, 255, 210);
+    background-color: transparent;
     margin: 15px;
 }
 .buttonName{

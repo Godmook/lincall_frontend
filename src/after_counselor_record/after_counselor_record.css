@@ -1,0 +1,72 @@
+.chat_normal{
+    margin-top: 18px;
+    position: relative;
+    display:flex;
+    font-size: 20px;
+    border-radius: 10px;
+    margin: 20px;
+    word-break: break-all;
+    border-width: 20px;
+    float: left;
+    background-color: aliceblue;
+    padding: 20px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+    max-width: 60%;
+}
+.chat_angry{
+    margin-top: 18px;
+    position: relative;
+    display:flex;
+    font-size: 20px;
+    border-radius: 10px;
+    margin: 20px;
+    word-break: break-all;
+    border-width: 20px;
+    float:left;
+    background-color: rgb(255, 244, 244);
+    padding: 20px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+    max-width: 60%;
+}
+.chat_happy{
+    margin-top: 18px;
+    position: relative;
+    display:flex;
+    font-size: 20px;
+    border-radius: 10px;
+    margin: 20px;
+    word-break: break-all;
+    border-width: 20px;
+    float:left;
+    background-color:#e5faeb;
+    padding: 20px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+    max-width: 60%;
+}
+.chat_center{
+    margin-top: 18px;
+    position: relative;
+    display:flex;
+    font-size: 20px;
+    border-radius: 10px;
+    margin-right: 20px;
+    word-break: break-all;
+    border-width: 20px;
+    justify-content:center;
+    background-color: transparent;
+    font-weight: bold;
+    padding: 20px;
+    text-align: center;
+    width: 100%;
+}
+
+.chat_left_container{
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+}
+.chat_right_container{
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+}

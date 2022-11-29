@@ -7,19 +7,25 @@ import Spinner from "../assets/spinner5.gif";
 import URLsetting from "../Setting/URLsetting";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
-import { WavRecorder } from "webm-to-wav-converter";
-import { faMeh,faAngry, faSmile } from "@fortawesome/free-regular-svg-icons";
+import {WavRecorder} from "webm-to-wav-converter";
+import {faMeh, faAngry, faSmile} from "@fortawesome/free-regular-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-function ShowCurTime () {
-    const [time,setTime] = useState(0);
+function ShowCurTime() {
+    const [time, setTime] = useState(0);
     useEffect(() => {
         const myInterval = setInterval(() => {
-            setTime((setTime)=>(setTime)+1);
+            setTime((setTime) => (setTime) + 1);
         }, 1000);
         return() => clearInterval(myInterval);
     }, []);
 
-    return "상담시간 : " + parseInt(time/60).toString().padStart(2,"0")+":"+(time%60).toString().padStart(2,"0");
+    return "상담시간 : " + parseInt(time / 60)
+        .toString()
+        .padStart(2, "0") + ":" + (
+        time % 60
+    )
+        .toString()
+        .padStart(2, "0");
 }
 const TimeStamp = () => {
     const [current_Time, setTime] = useState("");
@@ -46,29 +52,34 @@ const TimeStamp = () => {
         </div>
     );
 };
-const CreatechatClient = ({type,message,time,emotion,question,answer}) => {
-    const [facetype,setFaceType] = useState(faMeh);
-    const [chatcolor,setChatColor] = useState("chat_normal");
-    useEffect(()=> {
-        if(emotion==="angry"){
+const CreatechatClient = ({
+    type,
+    message,
+    time,
+    emotion,
+    question,
+    answer
+}) => {
+    const [facetype, setFaceType] = useState(faMeh);
+    const [chatcolor, setChatColor] = useState("chat_normal");
+    useEffect(() => {
+        if (emotion === "angry") {
             setChatColor("chat_angry")
             setFaceType(faAngry);
-        }
-        else if(emotion==="happy"){
+        } else if (emotion === "happy") {
             setChatColor("chat_happy");
             setFaceType(faSmile);
         }
-    },[])
-    if(type=="counselor"){
-        return(
+    }, [])
+    if (type == "counselor") {
+        return (
             <div className="chat_left_container">
                 <FontAwesomeIcon icon={facetype} size="3x"/>
                 <div className={chatcolor}>{message}</div>
             </div>
         )
-    }
-    else if(type=="client"){
-        return(
+    } else if (type == "client") {
+        return (
             <div className="chat_right_container">
                 <div className={chatcolor}>{message}</div>
                 <FontAwesomeIcon icon={facetype} size="3x"/>
@@ -76,72 +87,70 @@ const CreatechatClient = ({type,message,time,emotion,question,answer}) => {
         )
     }
 }
-var stun_config ={
+var stun_config = {
     'iceServers': [
         {
             "urls": "stun:stun.l.google.com:19302"
         },
         {
-            "urls": "turn:211.202.222.162:8080",
-            'credential' : '1234',
-            'username' : 'admin'
-        },
-        {
             "urls": "stun1:stun.l.google.com:19302"
         },
     ]
+
 }
+var mediaRecorder;
 const CustomerMainPage = () => {
+    const isKeyDown = useRef(false);
     const TurnONMedia = () => {
         mediaRecorder.start();
         console.log("start!");
     }
     const TestTurnOFfMedia = () => {
         mediaRecorder.stop();
-        const p = new Promise((resolve,reject) => {
-            setTimeout(function(){resolve(mediaRecorder.getBlob())},1)
+        const p = new Promise((resolve, reject) => {
+            setTimeout(function () {
+                resolve(mediaRecorder.getBlob())
+            }, 1)
         })
-        p.then(msg=>{
+        p.then(msg => {
             let reader = new FileReader();
-        let base64data;
-        console.log(msg);
-        reader.readAsDataURL(msg);
-        reader.onloadend = () => {
-            base64data = reader.result;
-            axios.post(URLsetting.LOCAL_API_URL+"main/addText", {
-                roomId: ROOM_NUMBER_CONSIST.current,
-                from: "client",
-                time: Math.floor(new Date().getTime()),
-                encodeStr : base64data
-            }, {
-                headers: {
-                    "Content-Type": 'application/json'
-                }
-            })
-        }
+            let base64data;
+            console.log(msg);
+            reader.readAsDataURL(msg);
+            reader.onloadend = () => {
+                base64data = reader.result;
+                axios.post(URLsetting.LOCAL_API_URL + "main/addText", {
+                    roomId: ROOM_NUMBER_CONSIST.current,
+                    from: "client",
+                    time: Math.floor(new Date().getTime()),
+                    encodeStr: base64data
+                }, {
+                    headers: {
+                        "Content-Type": 'application/json'
+                    }
+                })
+            }
         })
-       //setTimeout(function(){console.log(blob)},3);
-    
     }
-    const isKeyDown = useRef(false);
     window.addEventListener("keydown", (e) => {
-        if((e.key)==='Enter' && !isKeyDown.current){
+        if ((e.key) === 'Enter' && !isKeyDown.current) {
             TurnONMedia();
-            isKeyDown.current=true;
+            isKeyDown.current = true;
         }
-        if((e.key)==='q' && isKeyDown.current){
+        if ((e.key) === 'q' && isKeyDown.current) {
             TestTurnOFfMedia();
-            isKeyDown.current=false;
+            isKeyDown.current = false;
         }
     });
+    const ROOM_NUMBER_CONSIST=useRef(0);
     const location = useLocation();
     const userName = location.state.Name;
-    const userID= location.state.Id;
-    const userEmail=location.state.Email;
+    const userID = location.state.Id;
+    const userEmail = location.state.Email;
     const [current_mode, setMode] = useState(2);
     const [consultingData, setData] = useState([]);
-    const [enters, setEnters]=useState([]);
-    const [cur_time,setCurTime] = useState(0);
+    const [enters, setEnters] = useState([]);
+    const [cur_time, setCurTime] = useState(0);
     const SetButtonFunction2 = () => {
         setMode(2);
         document
@@ -240,7 +249,7 @@ const CustomerMainPage = () => {
                     parseInt(hour3) + "시간" + parseInt(minute3) + "분 " + parseInt(sec3) + "초"
                 );
             }
-        },[])
+        }, [])
         return (
             <div
                 className="main_white_box"
@@ -269,45 +278,47 @@ const CustomerMainPage = () => {
         return (
             <div className="mypageStyle">
                 <p>
-                    <span className="ccFontStyle">이름 </span>
+                    <span className="ccFontStyle">이름
+                    </span>
                     <span className="ddFontStyle">{userName}</span>
                 </p>
                 <p>
-                    <span className="ccFontStyle">아이디 </span>
+                    <span className="ccFontStyle">아이디
+                    </span>
                     <span className="ddFontStyle">{userID}</span>
                 </p>
                 <p>
-                    <span className="ccFontStyle">이메일 </span>
+                    <span className="ccFontStyle">이메일
+                    </span>
                     <span className="ddFontStyle">{userEmail}</span>
                 </p>
                 <div className="row_align">
-                        <div className="eeFontStyle">
-                            현재 비밀번호
-                        </div>
-                        <input type="password" className="passwordInput"/>
+                    <div className="eeFontStyle">
+                        현재 비밀번호
+                    </div>
+                    <input type="password" className="passwordInput"/>
                 </div>
                 <div className="row_align">
-                        <div className="eeFontStyle">
-                            새 비밀번호
-                        </div>
-                        <input type="password" className="passwordInput"/>
+                    <div className="eeFontStyle">
+                        새 비밀번호
+                    </div>
+                    <input type="password" className="passwordInput"/>
                 </div>
             </div>
         )
     }
-    var LoadingToggleSelect= useRef(0);
-    var ROOM_NUMBER_CONSIST=useRef();
-    var isStompDisconnected=useRef(0);
-    const WaitLoadingToggle = () => {
+    var LoadingToggleSelect = useRef(0);
+    const WaitLoadingToggle = ({enters}) => {
         const ConsultingEnd = () => {
-            axios.get(URLsetting.LOCAL_API_URL+"consulting/end",{
-                params: {
-                    id: ROOM_NUMBER_CONSIST.current
-                }
-            })
-            .then((response)=>{
-                fieldSetAable();
-            })
+            var socket = new SockJS(URLsetting.LOCAL_API_URL + "/ws");
+                    var stomp = Stomp.over(socket);
+                    stomp.connect({}, function () {
+                        stomp.send("/pub/end", JSON.stringify({type: 'ice', sender: userID, channelId: ROOM_NUMBER_CONSIST.current, data: "dkdkdk"}));
+                        stomp.disconnect();
+                    })
+                    fieldSetAable();
+                    LoadingToggleSelect.current = 0;
+                    setEnters([]);
         }
         const [wait_time, setWaitTime] = useState(0);
         useEffect(() => {
@@ -323,50 +334,58 @@ const CustomerMainPage = () => {
                 return wait_time % 60 + '초';
             }
         }
-        function WebSocketInit (){
-            document.addEventListener("DOMContentLoaded", function(){
+        function WebSocketInit() {
+            document.addEventListener("DOMContentLoaded", function () {
                 WebSocket.init();
             })
         }
-        if(!LoadingToggleSelect.current){
-        return (
-            <div className="loading_margin">
-                <div className="image_centerpos">
-                    <img width="70%" src={Spinner}/>
+        if (!LoadingToggleSelect.current) {
+            return (
+                <div className="loading_margin">
+                    <div className="image_centerpos">
+                        <img width="70%" src={Spinner}/>
+                    </div>
+                    <div className="loadingFontStyle">
+                        현재 상담을 기다리고 있습니다.
+                        <br/><br/>
+                        상담 대기 시간 :
+                        <CalculateTime/>
+                    </div>
+                    <div className="red_bar" onClick={fieldSetAable}>
+                        상담 종료하기
+                    </div>
+                    <WebSocketInit/>
                 </div>
-                <div className="loadingFontStyle">
-                    현재 상담을 기다리고 있습니다.
-                    <br/><br/>
-                    상담 대기 시간 : 
-                    <CalculateTime/>
-                </div>
-                <div className="red_bar" onClick={fieldSetAable}>
-                    상담 종료하기
-                </div>
-                <WebSocketInit/>
-            </div>
-        )
-        }
-        else{
+            )
+        } else {
             return (
                 <div className="center_inner_box">
                     <div className="center_inner_top_box">
-                        <div className="calling_time_bar"><ShowCurTime/></div>
+                        <div className="calling_time_bar"></div>
                         <button className="calling_end_btn" onClick={ConsultingEnd}>상담 종료</button>
                     </div>
                     <div className="center_inner_bottom_box">
-                    <div className="chatting_grid" id="scrollDown">
-                        {
-                            enters.map((tmp) => (
-                                    < CreatechatClient
-                                        type={tmp.type}
-                                        message={tmp.message}
-                                        time={tmp.time}
-                                        emotion={tmp.emotion}
-                                        question={tmp.question}
-                                        answer={tmp.answer}/>
-                                ))
-                        }
+                        <div className="chatting_grid" id="scrollDown">
+                            {
+                                enters.map((tmp) => (< CreatechatClient type = {
+                                    tmp.type
+                                }
+                                message = {
+                                    tmp.message
+                                }
+                                time = {
+                                    tmp.time
+                                }
+                                emotion = {
+                                    tmp.emotion
+                                }
+                                question = {
+                                    tmp.question
+                                }
+                                answer = {
+                                    tmp.answer
+                                } />))
+                            }
                         </div>
                     </div>
                 </div>
@@ -382,116 +401,119 @@ const CustomerMainPage = () => {
         }
     }
 
-    var mediaRecorder;
     const Loading = () => {
-        var flag=0;
+        var flag = 0;
         let remoteVideo = new MediaStream();
-        useEffect(()=> {
+        useEffect(() => {
+            if(!LoadingToggleSelect.current){
             remoteVideo = document.getElementById('userAudio');
-            axios.get(URLsetting.LOCAL_API_URL+"consulting/create")
-            .then((response)=> {
-                const pc = new RTCPeerConnection(
-                    {configuration: URLsetting.MEDIACONSTRAINTS ,stun_config }
-                );
-                ROOM_NUMBER_CONSIST.current=response.data;
-                function handlerIceCandidate(e) {
-                    if (e.candidate) {
-                        if(flag){
-                        stomp.send(
-                            "/pub/data",
-                            JSON.stringify({type: 'ice', sender: userID, channelId: response.data, data: e.candidate})
-                        );
+            axios
+                .get(URLsetting.LOCAL_API_URL + "consulting/create")
+                .then((response) => {
+                    const pc = new RTCPeerConnection(
+                        {configuration: URLsetting.MEDIACONSTRAINTS, stun_config}
+                    );
+                    ROOM_NUMBER_CONSIST.current = response.data;
+                    function handlerIceCandidate(e) {
+                        if (e.candidate) {
+                            if (flag) {
+                                stomp.send(
+                                    "/pub/data",
+                                    JSON.stringify({type: 'ice', sender: userID, channelId: response.data, data: e.candidate})
+                                );
+                            }
+                            console.log("HANDLER ICE State: " + pc.iceConnectionState);
                         }
-                        console.log("HANDLER ICE State: " + pc.iceConnectionState);
-                    }
-                }(async () => {
-                    await navigator
-                        .mediaDevices
-                        .getUserMedia({audio: true, video: false})
-                        .then(stream => {
-                            mediaRecorder= new WavRecorder(stream);
-                            stream
-                                .getTracks()
-                                .forEach(track => pc.addTrack(track, stream));
-                        })
-                })();
-                var socket = new SockJS(URLsetting.LOCAL_API_URL+"/ws");
-                var stomp = Stomp.over(socket);
-                pc.onicecandidate = handlerIceCandidate;
-                pc.addEventListener("icecandidate", handlerIceCandidate);
-                pc.addEventListener('track', async (event) => {
-                    const [remoteStream] = event.streams;
-                    remoteVideo.srcObject = remoteStream;
-                    console.log(remoteVideo.srcObject)
-                })
-                pc.addEventListener("connectionstatechange",(event)=>{
-                    if(pc.iceConnectionState=="connected"){
-                        console.log(pc.iceConnectionState);
-                        LoadingToggleSelect.current=1;
-                        stomp.send("/pub/success");
-                    }
-                })
-                stomp.connect({}, function () {
-                    stomp.subscribe("/sub/room/" + response.data, function (msg) {
-                        if ((msg.body).includes('join')) {
-                            var tmp2 = (msg.body).substring(0, (msg.body).length - 5);
-                            if (tmp2 != userID) {
-                                pc
-                                    .createOffer({mandatory: { OfferToReceiveAudio: true, OfferToReceiveVideo: false }})
-                                    .then((offer) => pc.setLocalDescription(offer))
-                                    .then(() => {
-                                        stomp.send(
-                                            "/pub/data",
-                                            JSON.stringify({type: 'offer', sender: userID, channelId: response.data, data: pc.localDescription})
-                                        );
-                                    })
-                            }
-                        } else {
-                            var tmp = JSON.parse(msg.body);
-                            if (tmp.type == "answer") {
-                                flag=1;
-                                pc.setRemoteDescription(tmp.data);
-                                console.log("answer!!");
-                            } else if (tmp.type == "ice") {
-                                if (tmp.data) {
-                                    if(flag){
-                                        pc.addIceCandidate(tmp.data);
-                                        console.log("ICE State: " + pc.iceConnectionState);
-                                    }
-                                }
-                                console.log("ICE State: " + pc.iceConnectionState);
-                            }
-                            else if(tmp.type == "counselor" || tmp.type == "client" ||
-                            tmp.type == "notice"){
-                                if(tmp.question !==''){
-                                    //질문 및 답변 처리
-                                    
-                                }
-                                //setCurrentMessage(tmp.message);
-                                const p = new Promise((resolve,reject) => {
-                                    resolve(setEnters(enters => [...enters, tmp]));
-                                })
-                                p.then(()=>{
-                                    setTimeout(()=>{
-                                        var objDiv = document.getElementById("ggggg");
-                                        objDiv.scrollTop = objDiv.scrollHeight;
-                                    },1);
-                                })
-                            }
+                    }(async () => {
+                        await navigator
+                            .mediaDevices
+                            .getUserMedia({audio: true, video: false})
+                            .then(stream => {
+                                mediaRecorder = new WavRecorder(stream);
+                                stream
+                                    .getTracks()
+                                    .forEach(track => pc.addTrack(track, stream));
+                            })
+                    })();
+                    var socket = new SockJS(URLsetting.LOCAL_API_URL + "/ws");
+                    var stomp = Stomp.over(socket);
+                    pc.onicecandidate = handlerIceCandidate;
+                    pc.addEventListener("icecandidate", handlerIceCandidate);
+                    pc.addEventListener('track', async (event) => {
+                        const [remoteStream] = event.streams;
+                        remoteVideo.srcObject = remoteStream;
+                        console.log(remoteVideo.srcObject)
+                    })
+                    pc.addEventListener("connectionstatechange", (event) => {
+                        if (pc.iceConnectionState == "connected") {
+                            console.log(pc.iceConnectionState);
+                            LoadingToggleSelect.current = 1;
+                            stomp.send("/pub/success");
                         }
                     })
-                    stomp.send(
-                        "/pub/join",
-                        JSON.stringify({type: 'client', sender: userID, channelId: response.data, data: pc.localDescription})
-                    );
+                    stomp.connect({}, function () {
+                        stomp.subscribe("/sub/room/" + response.data, function (msg) {
+                            if ((msg.body).includes('join')) {
+                                var tmp2 = (msg.body).substring(0, (msg.body).length - 5);
+                                if (tmp2 != userID) {
+                                    pc
+                                        .createOffer({
+                                            mandatory: {
+                                                OfferToReceiveAudio: true,
+                                                OfferToReceiveVideo: false
+                                            }
+                                        })
+                                        .then((offer) => pc.setLocalDescription(offer))
+                                        .then(() => {
+                                            stomp.send(
+                                                "/pub/data",
+                                                JSON.stringify({type: 'offer', sender: userID, channelId: response.data, data: pc.localDescription})
+                                            );
+                                        })
+                                }
+                            } else {
+                                var tmp = JSON.parse(msg.body);
+                                if (tmp.type == "answer") {
+                                    flag = 1;
+                                    pc.setRemoteDescription(tmp.data);
+                                    console.log("answer!!");
+                                } else if (tmp.type == "ice") {
+                                    if (tmp.data) {
+                                        if (flag) {
+                                            pc.addIceCandidate(tmp.data);
+                                            console.log("ICE State: " + pc.iceConnectionState);
+                                        }
+                                    }
+                                    console.log("ICE State: " + pc.iceConnectionState);
+                                } else if (tmp.type == "counselor" || tmp.type == "client" || tmp.type == "notice") {
+                                    if (tmp.question !== '') {
+                                        //질문 및 답변 처리
+
+                                    }
+                                    //setCurrentMessage(tmp.message);
+                                    const p = new Promise((resolve, reject) => {
+                                        resolve(setEnters(enters => [
+                                            ...enters,
+                                            tmp
+                                        ]));
+                                    })
+                                    p.then(() => {
+                                        setTimeout(() => {
+                                            var objDiv = document.getElementById("ggggg");
+                                            objDiv.scrollTop = objDiv.scrollHeight;
+                                        }, 1);
+                                    })
+                                }
+                            }
+                        })
+                        stomp.send(
+                            "/pub/join",
+                            JSON.stringify({type: 'client', sender: userID, channelId: response.data, data: pc.localDescription})
+                        );
+                    })
                 })
-            })
-        },[])
-        return (
-            <>
-            <WaitLoadingToggle/>
-            </>
-        ) 
+        }}, [])
+        return (<> < WaitLoadingToggle enters={enters} /> </>)
     }
     const fieldSetDisable = () => {
         const fieldset = document.getElementById('button_disable');
@@ -501,20 +523,17 @@ const CustomerMainPage = () => {
         const fieldset = document.getElementById('button_disable');
         fieldset.disabled = false;
         SetButtonFunction2();
-        var socket = new SockJS(URLsetting.LOCAL_API_URL+"/ws");
-                var stomp = Stomp.over(socket);
-                stomp.connect({}, function () {
-                    stomp.send("/pub/quit",JSON.stringify({type:"client",sender:userID,channelId:ROOM_NUMBER_CONSIST.current,data:"asdfafdasf"}));
-                    stomp.disconnect()
-                })
     }
     useEffect(() => {
         axios
-            .get(URLsetting.LOCAL_API_URL+"consulting/records/client", {
-                params: {
-                    clientID: userID
+            .get(
+                URLsetting.LOCAL_API_URL + "consulting/records/client",
+                {
+                    params: {
+                        clientID: userID
+                    }
                 }
-            })
+            )
             .then((response) => {
                 setData(response.data);
             })
@@ -522,7 +541,7 @@ const CustomerMainPage = () => {
     function ModeChange() {
         if (current_mode == 2) {
             return (
-                <div className="grid">
+                <div className="grid" id="ggggg">
                     {
                         consultingData.map((tmp) => (
                             <MakeWhiteBox
