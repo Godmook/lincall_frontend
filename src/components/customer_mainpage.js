@@ -8,9 +8,16 @@ import URLsetting from "../Setting/URLsetting";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import { WavRecorder } from "webm-to-wav-converter";
-function ShowCurTime ({current_time}) {
+function ShowCurTime () {
+    const [time,setTime] = useState(0);
+    useEffect(() => {
+        const myInterval = setInterval(() => {
+            setTime((setTime)=>(setTime)+1);
+        }, 1000);
+        return() => clearInterval(myInterval);
+    }, []);
 
-    return "상담시간 : " + parseInt(current_time/60).toString().padStart(2,"0")+":"+(current_time%60).toString().padStart(2,"0");
+    return "상담시간 : " + parseInt(time/60).toString().padStart(2,"0")+":"+(time%60).toString().padStart(2,"0");
 }
 const TimeStamp = () => {
     const [current_Time, setTime] = useState("");
@@ -230,12 +237,6 @@ const CustomerMainPage = () => {
             </div>
         )
     }
-    useEffect(()=>{
-        const myInterval = setInterval(() => {
-            setCurTime(cur_time+1);
-        }, 1000);
-        return() => clearInterval(myInterval);
-    }, []);
     var LoadingToggleSelect= useRef(0);
     var ROOM_NUMBER_CONSIST=useRef();
     var isStompDisconnected=useRef(0);
@@ -247,7 +248,7 @@ const CustomerMainPage = () => {
                 }
             })
             .then((response)=>{
-                console.log("finish!");
+                fieldSetAable();
             })
         }
         const [wait_time, setWaitTime] = useState(0);
@@ -269,7 +270,7 @@ const CustomerMainPage = () => {
                 WebSocket.init();
             })
         }
-        if(!LoadingToggleSelect.current){
+        if(LoadingToggleSelect.current){
         return (
             <div className="loading_margin">
                 <div className="image_centerpos">
@@ -292,8 +293,8 @@ const CustomerMainPage = () => {
             return (
                 <div className="center_inner_box">
                     <div className="center_inner_top_box">
-                        <div className="calling_time_bar"><ShowCurTime current_time={cur_time}/></div>
-                        <button className="calling_end_btn">상담 종료</button>
+                        <div className="calling_time_bar"><ShowCurTime/></div>
+                        <button className="calling_end_btn" onClick={ConsultingEnd}>상담 종료</button>
                     </div>
                     <div className="center_inner_bottom_box">
                     <div className="chatting_grid" id="scrollDown">

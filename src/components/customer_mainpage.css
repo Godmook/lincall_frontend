@@ -286,6 +286,8 @@ input:focus {
     justify-content:space-around;
     flex-direction: row;
     align-items: center;
+    font-size: 180%;
+    font-weight: lighter;
 }
 .calling_end_btn{
     display: flex;
@@ -298,8 +300,12 @@ input:focus {
     align-items: center;
     border-color: transparent;
     box-shadow: 0 0 15px rgba(53, 53, 53, 0.54);
-    font-size: 15px;
+    font-size: 150%;
+    transition: 0.5s;
     font-weight: bold;
+}
+.calling_end_btn:hover{
+    transform: scale(1.05);
 }
 .center_inner_bottom_box{
     display: flex;
