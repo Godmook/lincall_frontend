@@ -101,15 +101,18 @@ const ShowCurrentEmotion = ({emotion}) => {
     }
 }
 const ShowVoiceSpeed = ({message}) => {
+    let ttt= (end_time-start_time)/1000;
+    total_time+=ttt;
     if(!total_time){
         return ""
     }
     else{
-    let ttt= (end_time-start_time)/1000;
-    total_time+=ttt;
+        console.log(end_time,start_time);
     let result = message.toString().replace(/ /g, '');
     total_word+=result.length;
-    return parseInt(total_word/total_time).toString() + "음절/s";
+    console.log("word",total_word);
+    console.log("time",total_time);
+    return (total_word/total_time*60).toString() + "음절/s";
     }
 }
 var total_word=0;
@@ -137,7 +140,6 @@ const TurnONMedia = () => {
 const TestTurnOFfMedia = () => {
     mediaRecorder.stop();
     end_time=new Date().getTime();
-    total_time=end_time-start_time;
     const p = new Promise((resolve,reject) => {
         setTimeout(function(){resolve(mediaRecorder.getBlob())},1)
     })
@@ -172,10 +174,15 @@ const TestTurnOFfMedia = () => {
 const MakeAnswer = ({answer}) =>{
     console.log(answer);
     let tmp=""+answer;
+    if(tmp!==""&& tmp!=="undefined"){
     console.log("sujung before",tmp);
     tmp=tmp.replace(/\\n/g, '<br />');
     console.log("after",tmp);
-    document.getElementById('InAnswer').innerHTML=tmp;
+    var tempDiv = document.createElement('div');
+    tempDiv.innerHTML=tmp;
+    document.getElementById('InAnswer').innerHTML='';
+    document.getElementById('InAnswer').appendChild(tempDiv);
+    }
 }
 var mediaRecorder;
 var roomID
@@ -296,19 +303,15 @@ const Room = () => {
                             }
                         }
                     }
-                    else if(tmp.type == "counselor" || tmp.type == "client"){
+                    else if(tmp.type=="counselor" || tmp.type == "client"){
                         console.log('a');
-                        if(tmp.question !=='' && tmp.type==="client"){
+                        if(Object.keys(tmp).includes('question') && tmp.type==="client"){
                             //질문 및 답변 처리
                             setQuestion(tmp.question);
-                            const p= new Promise((resolve,reject) => {
-                                resolve(setAnswer(tmp.answer));
-                            })
-                            p.then(()=>{
-                                setTimeout(()=>{MakeAnswer(answer)},1);
-                            })
+                            setAnswer(tmp.answer);
 
                         }
+                        if(tmp.type==="client"){
                         if(tmp.emotion==="angry")
                             setCurrentEmotion("화남");
                         else if(tmp.emotion==="none"){
@@ -317,6 +320,7 @@ const Room = () => {
                         else if(tmp.emotion==="happy"){
                             setCurrentEmotion("행복");
                         }
+                    }
                         setCurrentMessage(tmp.message);
                         const p = new Promise((resolve,reject) => {
                             resolve(setEnters(enters => [...enters, tmp]));
@@ -409,6 +413,7 @@ const Room = () => {
                     </p>
                 </div>
             </div>
+            <MakeAnswer answer={answer}/>
         </div>
     )
 }
