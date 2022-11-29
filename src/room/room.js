@@ -410,7 +410,7 @@ const Room = () => {
                 <div className="right_bar_counselor_mainpage_calling_box">
                     <div className="right_bar_counselor_mainpage_calling">
                     <p className="bigText" id="memo">
-                            MEMO
+                            상황별 대처법
                     </p>
                     </div>
                 </div>

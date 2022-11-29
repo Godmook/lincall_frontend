@@ -95,7 +95,6 @@
     grid-auto-flow:row;
     overflow: hidden;
     padding: 3px;
-    border: 1px solid black;
     box-sizing: border-box;
     overflow-x: auto;
     overflow-y: auto;
@@ -190,7 +189,7 @@
 }
 .lincall_calling{
     font-size: 400%;
-    font-weight: lighter;
+    font-weight: bold;
     font-style: normal;
     color: #359DD9;
     float: left;
