@@ -72,18 +72,20 @@ function Mode1GrayBox ({end,clientName,start,counselorName,time, id}){
     ,[])
     
     return (
-        <div className="mode1_grid_gray_box" onClick={() => navigate('/counselor/after/room/'+id, {
-            state: {
-                id:id,
-                counselorName: counselorName,
-                clientName: clientName,
-                start:start,
-                time:time,
-                email:userEmail,
-                ccid:userID
-            }
-        })}>
+        <div className="mode1_grid_gray_box_container">
+            <div className="mode1_grid_gray_box" onClick={() => navigate('/counselor/after/room/'+id, {
+                state: {
+                    id:id,
+                    counselorName: counselorName,
+                    clientName: clientName,
+                    start:start,
+                    time:time,
+                    email:userEmail,
+                    ccid:userID
+                }
+            })}>
             {timecheck}  ({thistime})
+        </div>
         </div>
     )
 }
@@ -359,6 +361,7 @@ const CounselorMainPage = () => {
     const leftbar_backgroundcolor = (number) => {
         for (var i = 1; i < 6; i++) {
             var tmp = "select" + i;
+            if(i==3){continue;}
             if (i != number) {
                 document
                     .getElementById(tmp)
@@ -406,11 +409,6 @@ const CounselorMainPage = () => {
                         value="2"
                         id="select2"
                         onClick={e => leftbar_backgroundcolor(e.target.value)}>상담 시작</button>
-                    <button
-                        className="left_bar_text_font"
-                        value="3"
-                        id="select3"
-                        onClick={e => leftbar_backgroundcolor(e.target.value)}>상담 내역 조회</button>
                     <button
                         className="left_bar_text_font"
                         value="4"

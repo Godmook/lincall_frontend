@@ -89,13 +89,13 @@ const ShowCurrentEmotion = ({emotion}) => {
     }
     else{
         if(emotion==="화남"){
-            document.getElementById('emotion_bar').style['background-color']="red";
+            document.getElementById('emotion_bar').style['background-color']="#faafaf";
         }
         if(emotion==="평온"){
-            document.getElementById('emotion_bar').style['background-color']="white";
+            document.getElementById('emotion_bar').style['background-color']="#faf6af";
         }
         if(emotion==="행복"){
-            document.getElementById('emotion_bar').style['background-color']="black";
+            document.getElementById('emotion_bar').style['background-color']="#affac5";
         }
         return emotion;
     }
@@ -343,77 +343,79 @@ const Room = () => {
     },[])
     
     return(
-        <div className="calling_page">
-            <div className="calling_center">
-                <audio id="userAudio" autoPlay="autoPlay" playsInline="playsInline"></audio>
-                <div className="calling_center_top">
-                    <div className="calling_center_top_left">
-                        <div className="left1"><p className="left1_text" id="emotion_bar">고객 감정</p><p className="emotion"><ShowCurrentEmotion emotion={current_emotion}/></p></div>
-                        <div className="left2"><p className="left2_text" onClick={TurnONMedia}>목소리 크기</p><p className="volume"><ShowVoiceLevel level={current_message}/></p></div>
-                        <div className="left3"><p className="left3_text" onClick={TestTurnOFfMedia}>말 빠르기</p> <p className="speed"><ShowVoiceSpeed message = {current_message}/></p></div>
-                    </div>
-                    <div className="calling_center_top_right">
-                        <div className="calling_center_top_right_question">
-                            <p className="right1">Q. {question}</p>
+        <div className="calling_page_box">
+            <div className="lincall_box">
+                <div className="lincall_calling">LINCALL</div>
+                <div className="calling_text"> &nbsp; - 상담중</div>
+            </div>
+            <div className="calling_page">
+                <div className="calling_center">
+                    <audio id="userAudio" autoPlay="autoPlay" playsInline="playsInline"></audio>
+                    <div className="calling_center_top">
+                        <div className="calling_center_top_left">
+                            <div className="left1" id="emotion_bar"><p className="left1_text">고객 감정</p><p className="emotion"><ShowCurrentEmotion emotion={current_emotion}/></p></div>
+                            <div className="left2"><p className="left2_text" onClick={TurnONMedia}>목소리 크기</p><p className="volume"><ShowVoiceLevel level={current_message}/></p></div>
+                            <div className="left3"><p className="left3_text" onClick={TestTurnOFfMedia}>말 빠르기</p> <p className="speed"><ShowVoiceSpeed message = {current_message}/></p></div>
                         </div>
-                        <div className="calling_center_top_right_answer">
-                        <div className="right2" id="InAnswer">
-                        </div>
-                        </div>                    
-                    </div>
-                </div>
-                <div className="calling_center_bottom">
-                    <div className="calling_center_bottom_left">
-                        <div className="search_box">
-                            <input type="text" className="search_txt" name=""placeholder="검색할 것을 입력하세요 !"></input>
-                        </div>
-                        <div className="chatting_grid" id="ggggg">
-                        {
-                            enters.map((tmp) => (
-                                    < Createchat
-                                        type={tmp.type}
-                                        message={tmp.message}
-                                        time={tmp.time}
-                                        emotion={tmp.emotion}
-                                        question={tmp.question}
-                                        answer={tmp.answer}/>
-                                ))
-                            }
+                        <div className="calling_center_top_right">
+                            <div className="calling_center_top_right_question">
+                                <p className="right1">Q. {question}</p>
+                            </div>
+                            <div className="calling_center_top_right_answer">
+                            <div className="right2" id="InAnswer">
+                            </div>
+                            </div>                    
                         </div>
                     </div>
-                    <div className="calling_center_bottom_right">
-                        <div className="mute">
-                            <p className="buttonName">고객 음성 차단</p>
-                            <span className="toggle-switch" onClick={toggleClass}>
-                                <span className="toggle-knob"></span>
-                            </span>
-                        </div>
-                        <div className="changeEmotion">
-                            <div className="emotion_change_grid">
+                    <div className="calling_center_bottom">
+                        <div className="calling_center_bottom_left">
+                            <div className="chatting_grid" id="ggggg">
                             {
-                                enters2.map((tmp) => (
-                                        < CreateEmotionChange
+                                enters.map((tmp) => (
+                                        < Createchat
                                             type={tmp.type}
                                             message={tmp.message}
                                             time={tmp.time}
-                                            emotion={tmp.emotion}
-                                            question={tmp.question}
+                                            emotion={tmp.emotion}                                                question={tmp.question}
                                             answer={tmp.answer}/>
                                     ))
                                 }
                             </div>
                         </div>
+                        <div className="calling_center_bottom_right">
+                            <div className="mute">
+                                <p className="buttonName">고객 음성 차단</p>
+                                <span className="toggle-switch" onClick={toggleClass}>
+                                    <span className="toggle-knob"></span>
+                                </span>
+                            </div>
+                            <div className="changeEmotion">
+                                <div className="emotion_change_grid">
+                                {
+                                    enters2.map((tmp) => (
+                                            < CreateEmotionChange
+                                                type={tmp.type}
+                                                message={tmp.message}
+                                                time={tmp.time}
+                                                emotion={tmp.emotion}
+                                                question={tmp.question}
+                                                answer={tmp.answer}/>
+                                        ))
+                                    }
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className="right_bar_counselor_mainpage_calling_box">
-                <div className="right_bar_counselor_mainpage_calling">
-                <p className="bigText" id="memo">
-                        MEMO
+                <div className="right_bar_counselor_mainpage_calling_box">
+                    <div className="right_bar_counselor_mainpage_calling">
+                    <p className="bigText" id="memo">
+                            MEMO
                     </p>
+                    </div>
                 </div>
+                <MakeAnswer answer={answer}/>
             </div>
-            <MakeAnswer answer={answer}/>
         </div>
     )
 }
