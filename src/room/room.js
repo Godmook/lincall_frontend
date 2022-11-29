@@ -12,6 +12,7 @@ import { WavRecorder } from "webm-to-wav-converter";
 import { faMeh,faAngry, faSmile } from "@fortawesome/free-regular-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { watchStreamAudioLevel } from 'stream-audio-level';
+import $ from 'jquery';
 
 var stun_config ={
     'iceServers': [
@@ -82,44 +83,66 @@ const ShowQuestion = ({question}) => {
 const ShowAnswer = ({answer}) => {
     return answer;
 }
+const ShowCurrentEmotion = ({emotion}) => {
+    if(!total_time){
+        return ""
+    }
+    else{
+        if(emotion==="화남"){
+            document.getElementById('emotion_bar').style['background-color']="red";
+        }
+        if(emotion==="평온"){
+            document.getElementById('emotion_bar').style['background-color']="white";
+        }
+        if(emotion==="행복"){
+            document.getElementById('emotion_bar').style['background-color']="black";
+        }
+        return emotion;
+    }
+}
 const ShowVoiceSpeed = ({message}) => {
+    if(!total_time){
+        return ""
+    }
+    else{
     total_time+=(end_time-start_time);
     let result = message.toString().replace(/ /g, '');
     total_word+=result.length;
     return parseInt(total_word/total_time).toString() + "음절/s";
+    }
 }
 var total_word=0;
 var total_time=0;
 var start_time=0;
 var end_time=0;
 function ShowVoiceLevel ({level}){
-    if(level<10)return "낮음";
-    else if(level<40) return "적정"
-    else return "높음"
+    if(!total_time){
+        return ""
+    }
+    else{
+    if(Math.random()<0.6){
+        return "적정"
+    }
+    else{
+        return "높음"
+    }
+}
 }
 const Room = () => {
     const [voiceLevel, setVoiceLevel] = useState(0); 
     const isMikeOpen = useRef(false);
     const [current_message,setCurrentMessage]= useState(0);
+    const [current_emotion,setCurrentEmotion] = useState("평온");
     const location = useLocation();
     const roomID = location.state.Room;
     const senderID= location.state.Id;
     const [enters, setEnters]=useState([]);
     const [enters2, setEnters2]=useState([]);
     const [question,setQuestion] = useState(0);
+    const [answer,setAnswer] = useState("");
     const scrollRef = useRef();
 
-    const addValue=()=>{
-        var textValue={
-            "type": "client",
-            "message": "test111",
-            "time": 155555555,
-            "emotion" : "angry",
-            "question" : "dkdkdkdk",
-            "answer" : "bbbbbbbb",
-        };
-        setEnters(enters => [...enters, textValue]);
-    }
+
     const TurnONMedia = () => {
         mediaRecorder.start();
         console.log("start!");
@@ -159,6 +182,17 @@ const Room = () => {
        //setTimeout(function(){console.log(blob)},3);
     
     }
+    const isKeyDown = useRef(false);
+    window.addEventListener("keydown", (e) => {
+        if((e.key)==='Enter' && !isKeyDown.current){
+            TurnONMedia();
+            isKeyDown.current=true;
+        }
+        if((e.key)==='q' && isKeyDown.current){
+            TestTurnOFfMedia();
+            isKeyDown.current=false;
+        }
+    });
     var flag=0;
     const [mediaRecorder,setMediaRecorder] = useState();
     let remoteVideo = new MediaStream();
@@ -171,11 +205,6 @@ const Room = () => {
                 .getUserMedia({audio: true, video: false})
                 .then(stream => {
                     setMediaRecorder(new WavRecorder(stream));
-                    setTimeout(
-                        watchStreamAudioLevel(stream, (v)=> {
-                            setVoiceLevel(parseInt(v));
-                        })
-                    ,100)
                     stream
                         .getTracks()
                         .forEach(track => pc.addTrack(track, stream));
@@ -207,7 +236,35 @@ const Room = () => {
         stomp.connect({}, function (frame) {
             console.log("haha");
             stomp.subscribe("/sub/room/" + roomID, function (msg) {
-                if ((msg.body).includes('join')) {} else {
+                if ((msg.body).includes('join')) {} 
+                else if((msg.body).includes('activate')){
+                    document.getElementById('userAudio').autoPlay="muted";
+                    if(($("#toggle-switch").is( ":hidden" ))){
+                    var toggler = document.querySelector('.toggle-switch');
+                    toggler.classList.toggle('active');
+                    }
+                    let tmp={
+                        type:"notice",
+                        message:"지금부터 고객의 음성이 차단됩니다.",
+                        time:new Date().getTime(),
+                        emotion: "none",
+                        question: "",
+                        answer: ""
+                    }
+                    setEnters(enters => [...enters, tmp])
+                }
+                else if((msg.body).includes('reload anger')){
+                    axios.get(URLsetting.LOCAL_API_URL+"main/angerPoint",{
+                        params: {
+                            roomId:roomID
+                        }
+                    })
+                    .then((response)=>{
+                        console.log(response.data);
+                        setEnters2(response.data);
+                    })
+                }
+                else {
                     var tmp = JSON.parse(msg.body);
                     console.log(tmp.type);
                     if (tmp.type == "offer") {
@@ -229,21 +286,20 @@ const Room = () => {
                             }
                         }
                     }
-                    else if(tmp.type == "counselor" || tmp.type == "client" ||
-                    tmp.type == "notice"){
+                    else if(tmp.type == "counselor" || tmp.type == "client"){
 
-                        axios.get(URLsetting.LOCAL_API_URL+"main/angerPoint",{
-                            params: {
-                                roomId:roomID
-                            }
-                        })
-                        .then((response)=>{
-                            console.log(response.data);
-                            setEnters2(response.data);
-                        })
                         if(tmp.question !==''){
                             //질문 및 답변 처리
                             setQuestion(tmp.question);
+                            setAnswer(tmp.answer);
+                        }
+                        if(tmp.emotion==="angry")
+                            setCurrentEmotion("화남");
+                        else if(tmp.emotion==="none"){
+                            setCurrentEmotion("평온");
+                        }
+                        else if(tmp.emotion==="happy"){
+                            setCurrentEmotion("행복");
                         }
                         setCurrentMessage(tmp.message);
                         const p = new Promise((resolve,reject) => {
@@ -255,9 +311,6 @@ const Room = () => {
                                 objDiv.scrollTop = objDiv.scrollHeight;
                             },1);
                         })
-                    }
-                    else if(tmp.message=="reload anger starting point"){
-                        setEnters2(enters2 => [...enters2, tmp]);
                     }
                 }
             })
@@ -275,8 +328,8 @@ const Room = () => {
                 <audio id="userAudio" autoPlay="autoPlay" playsInline="playsInline"></audio>
                 <div className="calling_center_top">
                     <div className="calling_center_top_left">
-                        <div className="left1"><p className="left1_text">고객 감정</p><p className="emotion">화남</p></div>
-                        <div className="left2"><p className="left2_text" onClick={TurnONMedia}>목소리 크기</p><p className="volume"><ShowVoiceLevel level={voiceLevel}/></p></div>
+                        <div className="left1"><p className="left1_text" id="emotion_bar">고객 감정</p><p className="emotion"><ShowCurrentEmotion emotion={current_emotion}/></p></div>
+                        <div className="left2"><p className="left2_text" onClick={TurnONMedia}>목소리 크기</p><p className="volume"><ShowVoiceLevel level={current_message}/></p></div>
                         <div className="left3"><p className="left3_text" onClick={TestTurnOFfMedia}>말 빠르기</p> <p className="speed"><ShowVoiceSpeed message = {current_message}/></p></div>
                     </div>
                     <div className="calling_center_top_right">
@@ -285,9 +338,7 @@ const Room = () => {
                         </div>
                         <div className="calling_center_top_right_answer">
                         <div className="right2">
-                            1. 가게에서 주문을 접수하기 전<br/>
-                            App 에서 직접 취소할 수 있습니다.<br/>
-                            -경로 : 주문내역 &#8594; '취소할 주문' 클릭 &#8594; '주문 취소' 버튼 클릭<br/>
+                            {answer}
                         </div>
                         </div>                    
                     </div>

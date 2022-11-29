@@ -8,6 +8,8 @@ import URLsetting from "../Setting/URLsetting";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import { WavRecorder } from "webm-to-wav-converter";
+import { faMeh,faAngry, faSmile } from "@fortawesome/free-regular-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 function ShowCurTime () {
     const [time,setTime] = useState(0);
     useEffect(() => {
@@ -45,17 +47,31 @@ const TimeStamp = () => {
     );
 };
 const CreatechatClient = ({type,message,time,emotion,question,answer}) => {
-    if(type=="client"){
+    const [facetype,setFaceType] = useState(faMeh);
+    const [chatcolor,setChatColor] = useState("chat_normal");
+    useEffect(()=> {
+        if(emotion==="angry"){
+            setChatColor("chat_angry")
+            setFaceType(faAngry);
+        }
+        else if(emotion==="happy"){
+            setChatColor("chat_happy");
+            setFaceType(faSmile);
+        }
+    },[])
+    if(type=="counselor"){
         return(
             <div className="chat_left_container">
-                <div className="chat_right_client">{message}</div>
+                <FontAwesomeIcon icon={facetype} size="3x"/>
+                <div className={chatcolor}>{message}</div>
             </div>
         )
     }
-    else if(type=="counselor"){
+    else if(type=="client"){
         return(
             <div className="chat_right_container">
-                <div className="chat_left_counselor">{message}</div>
+                <div className={chatcolor}>{message}</div>
+                <FontAwesomeIcon icon={facetype} size="3x"/>
             </div>
         )
     }
@@ -76,6 +92,48 @@ var stun_config ={
     ]
 }
 const CustomerMainPage = () => {
+    const TurnONMedia = () => {
+        mediaRecorder.start();
+        console.log("start!");
+    }
+    const TestTurnOFfMedia = () => {
+        mediaRecorder.stop();
+        const p = new Promise((resolve,reject) => {
+            setTimeout(function(){resolve(mediaRecorder.getBlob())},1)
+        })
+        p.then(msg=>{
+            let reader = new FileReader();
+        let base64data;
+        console.log(msg);
+        reader.readAsDataURL(msg);
+        reader.onloadend = () => {
+            base64data = reader.result;
+            axios.post(URLsetting.LOCAL_API_URL+"main/addText", {
+                roomId: ROOM_NUMBER_CONSIST.current,
+                from: "client",
+                time: Math.floor(new Date().getTime()),
+                encodeStr : base64data
+            }, {
+                headers: {
+                    "Content-Type": 'application/json'
+                }
+            })
+        }
+        })
+       //setTimeout(function(){console.log(blob)},3);
+    
+    }
+    const isKeyDown = useRef(false);
+    window.addEventListener("keydown", (e) => {
+        if((e.key)==='Enter' && !isKeyDown.current){
+            TurnONMedia();
+            isKeyDown.current=true;
+        }
+        if((e.key)==='q' && isKeyDown.current){
+            TestTurnOFfMedia();
+            isKeyDown.current=false;
+        }
+    });
     const location = useLocation();
     const userName = location.state.Name;
     const userID= location.state.Id;
@@ -270,7 +328,7 @@ const CustomerMainPage = () => {
                 WebSocket.init();
             })
         }
-        if(LoadingToggleSelect.current){
+        if(!LoadingToggleSelect.current){
         return (
             <div className="loading_margin">
                 <div className="image_centerpos">
@@ -323,37 +381,7 @@ const CustomerMainPage = () => {
             )
         }
     }
-    const TurnONMedia = () => {
-        mediaRecorder.start();
-        console.log("start!");
-    }
-    const TestTurnOFfMedia = () => {
-        mediaRecorder.stop();
-        const p = new Promise((resolve,reject) => {
-            setTimeout(function(){resolve(mediaRecorder.getBlob())},1)
-        })
-        p.then(msg=>{
-            let reader = new FileReader();
-        let base64data;
-        console.log(msg);
-        reader.readAsDataURL(msg);
-        reader.onloadend = () => {
-            base64data = reader.result;
-            axios.post(URLsetting.LOCAL_API_URL+"main/addText", {
-                roomId: ROOM_NUMBER_CONSIST.current,
-                from: "client",
-                time: Math.floor(new Date().getTime()),
-                encodeStr : base64data
-            }, {
-                headers: {
-                    "Content-Type": 'application/json'
-                }
-            })
-        }
-        })
-       //setTimeout(function(){console.log(blob)},3);
-    
-    }
+
     var mediaRecorder;
     const Loading = () => {
         var flag=0;
@@ -432,6 +460,23 @@ const CustomerMainPage = () => {
                                     }
                                 }
                                 console.log("ICE State: " + pc.iceConnectionState);
+                            }
+                            else if(tmp.type == "counselor" || tmp.type == "client" ||
+                            tmp.type == "notice"){
+                                if(tmp.question !==''){
+                                    //질문 및 답변 처리
+                                    
+                                }
+                                //setCurrentMessage(tmp.message);
+                                const p = new Promise((resolve,reject) => {
+                                    resolve(setEnters(enters => [...enters, tmp]));
+                                })
+                                p.then(()=>{
+                                    setTimeout(()=>{
+                                        var objDiv = document.getElementById("ggggg");
+                                        objDiv.scrollTop = objDiv.scrollHeight;
+                                    },1);
+                                })
                             }
                         }
                     })
