@@ -443,7 +443,8 @@ const Room = () => {
         pc.addEventListener("connectionstatechange",(event)=>{
             if(pc.iceConnectionState=="connected"){
                 console.log(pc.iceConnectionState);
-                stomp.send("/pub/success");
+                stomp.send("/pub/success",
+                JSON.stringify({type: 'counselor', sender: senderID, channelId: roomID, data: pc.localDescription}));
             }
         })
         stomp.connect({}, function (frame) {

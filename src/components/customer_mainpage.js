@@ -467,7 +467,8 @@ const CustomerMainPage = () => {
                             setCurrentState("상담중");
                             console.log(pc.iceConnectionState);
                             LoadingToggleSelect.current = 1;
-                            stomp.send("/pub/success");
+                            stomp.send("/pub/success",
+                            JSON.stringify({type: 'success', sender: userID, channelId: response.data, data: pc.localDescription}));
                         }
                     })
                     stomp.connect({}, function () {

@@ -341,7 +341,7 @@ const CounselorMainPage = () => {
     userName = location.state.Name;
     userID= location.state.Id;
     userEmail=location.state.Email;
-    const [current_mode, setMode] = useState(2);
+    const [current_mode, setMode] = useState(1);
     const leftbar_backgroundcolor = (number) => {
         for (var i = 1; i < 6; i++) {
             var tmp = "select" + i;
