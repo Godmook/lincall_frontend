@@ -206,3 +206,21 @@
     float: left;
     width: 100%;
 }
+.big_title_text{
+    font-size: 150%;
+    font-weight: bold;
+    font-style: normal;
+    color: #359DD9;
+    width: 100%;
+}
+.manual_text{
+    font-size: 100%;
+    font-weight:200;
+    font-style: normal;
+    color:black;
+    width: 97%;
+}
+.color_green{
+    font-weight: bold;
+    color: green;
+}
