@@ -13,6 +13,10 @@
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
     max-width: 60%;
 }
+.boldText{
+    font-weight: bold;
+    font-size: 60px;
+}
 .chat_angry{
     margin-top: 18px;
     position: relative;

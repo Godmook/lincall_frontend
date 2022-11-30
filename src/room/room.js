@@ -71,10 +71,16 @@ const Createchat = ({type,message,time,emotion,question,answer}) => {
         )
     }
 }
-const CreateEmotionChange = ({type,message,time,emotion,question,answer}) => {
-    return(
-        <div className="emotion_change_sentence">{message}</div>
-    )
+const CreateEmotionChange = ({time,text,keyword}) => {
+    const obj=JSON.parse(keyword);
+    console.log(obj);
+    let str=""+text;
+    obj.forEach((element) => {
+        str=str.replace(element,"<span className="+'"boldText">'+element+"</span>");
+    })
+    var tempDiv = document.createElement('div');
+    tempDiv.innerHTML=str;
+    console.log(tempDiv);
 }
 
 const ShowQuestion = ({question}) => {
@@ -277,7 +283,7 @@ const Room = () => {
                         }
                     })
                     .then((response)=>{
-                        console.log(response.data);
+                        document.getElementById('ggggg').innerHTML='';
                         setEnters2(response.data);
                     })
                 }
@@ -394,12 +400,9 @@ const Room = () => {
                                 {
                                     enters2.map((tmp) => (
                                             < CreateEmotionChange
-                                                type={tmp.type}
-                                                message={tmp.message}
                                                 time={tmp.time}
-                                                emotion={tmp.emotion}
-                                                question={tmp.question}
-                                                answer={tmp.answer}/>
+                                                text={tmp.text}
+                                                keyword={tmp.keyword}/>
                                         ))
                                     }
                                 </div>

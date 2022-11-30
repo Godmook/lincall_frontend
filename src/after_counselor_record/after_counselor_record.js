@@ -61,13 +61,6 @@ function Abcd({type, time, emotion, text}) {
     }
 }
 const AfterCounselor = () => {
-    function TESTTT() {
-        console.log(talkmessage);
-        setTalkmessage(talkmessage => [
-            ...talkmessage,
-            ""
-        ])
-    }
     const location = useLocation();
     const start = location.state.start;
     const counselorName = location.state.counselorName;
@@ -138,7 +131,7 @@ const AfterCounselor = () => {
             </div>
             <div className="after_calling_center_top">
                 <div className="after_calling_keywords">
-                    <div className="positive_keyword" onClick={TESTTT}>긍정 키워드
+                    <div className="positive_keyword">긍정 키워드
                         <img
                             src={`data:image/jpeg;base64,${ptImg}`}
                             alt="My Image"
