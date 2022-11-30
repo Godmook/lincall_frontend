@@ -15,7 +15,7 @@
 }
 .boldText{
     font-weight: bold;
-    font-size: 60px;
+    color: rgb(212, 4, 4);
 }
 .chat_angry{
     margin-top: 18px;
@@ -31,6 +31,18 @@
     padding: 20px;
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
     max-width: 60%;
+}
+.chat_angry1{
+    width: 90%;
+    margin-top: 18px;
+    font-size: 20px;
+    border-radius: 10px;
+    margin: 20px;
+    border-width: 20px;
+    background-color: rgb(255, 244, 244);
+    padding: 20px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+    white-space: normal;
 }
 .chat_happy{
     margin-top: 18px;
@@ -163,7 +175,7 @@
 }
 .right_bar_counselor_mainpage_calling_box{
     display: flex;
-    width: 20%;
+    width: 22%;
     height:99%;
     flex-direction: column;
     align-items: center;

@@ -79,6 +79,14 @@
     border-radius: 2em;
     padding: 15px;
 }
+#calling{
+    width: 100%;
+    height: 100%;
+    background: #FFFFFF;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+    border-radius: 2em;
+    padding: 15px;
+}
 .right_bar_counselor_mainpage{
     display: grid;
     width: 100%;
@@ -221,7 +229,6 @@
     transform: scale(1.03);
 }
 .mode1_grid{
-    margin-top: 4%;
     width: 100%;
     height: 80%;
     display: grid;
@@ -231,7 +238,7 @@
     overflow: auto;
     grid-auto-rows: 25%;
     padding: 3px;
-    margin-left: 4%;
+    margin-left: 1%;
 }
 .mode1_grid::-webkit-scrollbar{
     height: 4%;
@@ -402,11 +409,12 @@
 }
 .bigText{
     margin: 7px;
-    font-size: 150%;
+    font-size: 200%;
     font-weight: bold;
     font-style: normal;
     color: black;
     margin: 10px;
+    text-align: center;
 }
 .emotion_wordcloue_text{
     margin: 7px;
@@ -693,14 +701,6 @@ body{
     margin-left: 24px;
 }
 
-.after_calling_center{
-    display: flex;
-    width: 97%;
-    height: 97%;
-    justify-content: space-around;
-    margin: 20px;
-    flex-direction: column;
-}
 .positive_keyword{
     display: flex;
     width: 47%;
@@ -723,44 +723,8 @@ body{
     font-size: 15px;
     color: red;
 }
-.after_calling_keywords{
-    display: flex;
-    width:100%;
-    height: 100%;
-    justify-content: space-around;
-    flex-direction: row;
-    background: #FFFFFF;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
-    border-radius: 2em;
-    padding: 15px;
-}
-.after_calling_center_top{
-    display: flex;
-    width: 100%;
-    height: 35%;
-    justify-content: center;
-    flex-direction: row;
-    padding: 15px;
-}
 
-.after_calling_center_bottom{
-    display: flex;
-    width: 100%;
-    height: 60%;
-    justify-content: space-around;
-}
-.after_calling_center_bottom_left{
-    display: flex;
-    width: 65%;
-    height: 100%;
-    background: #FFFFFF;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
-    border-radius: 2em;
-    flex-direction: column;
-    align-items:flex-start;
-    justify-content: center;
-    padding: 15px;
-}
+
 .after_search_box{
     position: flex;
     height: 10%;
@@ -796,6 +760,8 @@ body{
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
+    border-color: #f3f3f3;
+    border-style: solid;
 }
 .after_changeEmotion{
     display: flex;
@@ -806,7 +772,6 @@ body{
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
 }
 .after_calling_center_bars{
     display: flex;
@@ -965,4 +930,5 @@ a {
 }
 .center_manual{
     text-align: center;
+    font-size: smaller;
 }

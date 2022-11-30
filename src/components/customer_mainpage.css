@@ -285,7 +285,7 @@ input:focus {
     width: 70%;
     height: 80%;
     background: rgb(236, 210, 215);
-    box-shadow: 0 0 15px rgba(119, 119, 119, 0.54);
+
     border-radius: 2em;
     justify-content:space-around;
     flex-direction: row;
@@ -358,7 +358,6 @@ input:focus {
     flex-direction: row;
     align-items: center;
     border-color: transparent;
-    box-shadow: 0 0 15px rgba(119, 119, 119, 0.54);
     font-size: 150%;
     transition: 0.5s;
     font-weight: bold;

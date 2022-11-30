@@ -311,68 +311,7 @@ const Mode2 = () =>{
         var toggler = document.querySelector('.toggle-switch');
         toggler.classList.toggle('active');
     }
-    /*
-   return(
-    <div className="after_calling_center">
-        <div className="after_calling_center_bars">
-            <button className="after_calling_go_back">back</button>
-            <div className="after_calling_info_bar">
-                <p className="after_calling_info_text">상담 일시 : 2022년 09월 29일 19:07:06 30분</p>
-            </div>
-        </div>
-        <div className="after_calling_center_top">
-            <div className="after_calling_keywords">
-                <div className="positive_keyword">긍정 키워드
-                    <img src={`data:image/jpeg;base64,${ntImg}`} alt="My Image" className="wordcloud_img"></img>
-                </div>
-                <div class='v-line'></div>
-                <div className="negative_keyword">부정 키워드
-                    <img src={`data:image/jpeg;base64,${ntImg}`} alt="My Image"className="wordcloud_img"></img>
-                </div>
-            </div>
-        </div>
-        <div className="after_calling_center_bottom">
-            <div className="after_calling_center_bottom_left">
-                <div className="after_search_box">
-                        <input type="text" className="after_search_txt" name=""placeholder="검색할 것을 입력하세요 !"></input>
-                    </div>
-                    <div className="chatting">
-                    <div className="chatting_grid">
-                    {
-                        enters.map((tmp) => (
-                                < Createchat
-                                    type={tmp.type}
-                                    message={tmp.message}
-                                    time={tmp.time}
-                                    emotion={tmp.emotion}
-                                    question={tmp.question}
-                                    answer={tmp.answer}/>
-                            ))
-                        }
-                    </div>
-                    </div>
-                </div>
-                <div className="after_calling_center_bottom_right">
-                    <div className="after_changeEmotion">
-                    <div className="emotion_change_grid">
-                        {
-                            enters.map((tmp) => (
-                                    < CreateEmotionChange
-                                        type={tmp.type}
-                                        message={tmp.message}
-                                        time={tmp.time}
-                                        emotion={tmp.emotion}
-                                        question={tmp.question}
-                                        answer={tmp.answer}/>
-                                ))
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-    </div> 
-   )
-   */
+
    return (
     <>
     <div className="mode2_top">

@@ -383,7 +383,7 @@ const CustomerMainPage = () => {
             return (
                 <div className="center_inner_box">
                     <div className="center_inner_top_box">
-                        <div className="calling_time_bar"></div>
+                        <div className="calling_time_bar">고객님을 상담하고 있는 상담사 '정현진' 입니다.</div>
                         <button className="calling_end_btn" onClick={ConsultingEnd}>상담 종료</button>
                     </div>
                     <div className="center_inner_bottom_box">
