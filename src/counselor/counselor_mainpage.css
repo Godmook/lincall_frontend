@@ -419,6 +419,7 @@
 .logout{
     background-color: transparent;
     border-color: transparent;
+    text-decoration-line: underline;
 }
 .calling_center{
     display: flex;
