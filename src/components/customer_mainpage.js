@@ -98,8 +98,12 @@ var stun_config = {
     ]
 
 }
+const CurrentState = ({text}) => {
+    return text;
+}
 var mediaRecorder;
 const CustomerMainPage = () => {
+    const [whichCurrentState,setCurrentState] = useState("온라인");
     const isKeyDown = useRef(false);
     const TurnONMedia = () => {
         mediaRecorder.start();
@@ -173,6 +177,8 @@ const CustomerMainPage = () => {
             .style["background"] = "transparent";
     };
     const SetButtonFunction1 = () => {
+        document.getElementById('aaaabbb').style.color="#fc9803";
+        setCurrentState("상담 대기중");
         setMode(1);
         fieldSetDisable();
         document
@@ -310,6 +316,8 @@ const CustomerMainPage = () => {
     var LoadingToggleSelect = useRef(0);
     const WaitLoadingToggle = ({enters}) => {
         const ConsultingEnd = () => {
+            document.getElementById('aaaabbb').style.color="#1C8C00";
+            setCurrentState("온라인");
             var socket = new SockJS(URLsetting.LOCAL_API_URL + "/ws");
                     var stomp = Stomp.over(socket);
                     stomp.connect({}, function () {
@@ -446,6 +454,8 @@ const CustomerMainPage = () => {
                     })
                     pc.addEventListener("connectionstatechange", (event) => {
                         if (pc.iceConnectionState == "connected") {
+                            document.getElementById('aaaabbb').style.color="#fc2803";
+                            setCurrentState("상담중");
                             console.log(pc.iceConnectionState);
                             LoadingToggleSelect.current = 1;
                             stomp.send("/pub/success");
@@ -520,6 +530,8 @@ const CustomerMainPage = () => {
         fieldset.disabled = true;
     }
     const fieldSetAable = () => {
+        document.getElementById('aaaabbb').style.color="#1C8C00";
+        setCurrentState("온라인");
         const fieldset = document.getElementById('button_disable');
         fieldset.disabled = false;
         SetButtonFunction2();
@@ -568,7 +580,7 @@ const CustomerMainPage = () => {
                     <div className="regularFontStyle">{userName}</div>
                     <div className="smallFontStyle">고객</div>
                     <div className="left_bar_gray_box">
-                        <div className="currentStateStyle">온라인</div>
+                        <div className="currentStateStyle" id="aaaabbb"><CurrentState text={whichCurrentState}/></div>
                     </div>
                     <fieldset className="button_grouping" id="button_disable">
                         <button className="buttonFontStyle" id="select1" onClick={SetButtonFunction1}>
