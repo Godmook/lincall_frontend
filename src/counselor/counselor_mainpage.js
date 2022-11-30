@@ -6,56 +6,50 @@ import {useLocation} from "react-router-dom";
 import URLsetting from "../Setting/URLsetting";
 import { faMeh,faAngry, faSmile } from "@fortawesome/free-regular-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-const ManualPage = ({tt}) => {
-    if(!tt){
-        return (
-            <>
-            <span className="big_title_text">1. 응대 시작</span><br></br>
-            <span className="color_green">✔ 첫인사</span><br/>
-            - 인사말, 성명 모두 정확한 발음으로 명확하고 친절하게 첫인사 전달<br/>
-            - 부득이 전화 수신이 늦어질 경우 양해 안내<br/>
-            <br></br>
 
-            <span className="big_title_text">2. 문의 탐색</span><br></br>
-            <span className="color_green">✔ 신속한 문의 파악</span><br/>
-            •시민의 문의 사항을 집중하여 끝까지 듣고, 재 진술을 통한 정확한 니즈 파악 → 상담사 신뢰성 확보 <br/>
-            •말 겹침 시 정확한 문의 탐색을 위해 우선 듣기로 신속한 문의 파악 <br/>
-            •시민의 문의 사항을 속단하고 예측하여 문의 파악이 잘못 되지 않도록 주의 <br/>
-            •문의 내용을 파악하였다고 하여도 의도적으로 중간 개입하거나, 말 겹침이 일어나지 않도록 주의<br/>
-            <br></br>
-            </>
-        )
-    }
-    else{
-        return (
-            <>
-                                <span className="big_title_text">3. 상담 진행</span><br></br>
-                    <span className="color_green">✔ 정확하고 이해하기 쉬운 설명</span><br/>
-                    •정확하지 않은 추측성 정보를 안내하거나, 모호한 표현을 사용하지 않고 자료로 확인된 정확한 정보를 기반으로 안내 <br/>
-                    •어려울 수 있는 행정 정보에 대해 시민의 눈높이에 맞춘 자세한 설명 진행 → 시민의 이해 여부 확인 후 시민이 이해하지 못할 경우 다른 방식으로 설명 <br/>
-                    •부서 전화번호, 이메일 등 메모가 필요한 사항을 안내할 때에는 분명한 발음으로 응대 <br/>
-                    •담당 부서 연결이 필요할 때에는 사유 선 안내 후 연결 진행 <br/>
-                    •즉시 처리ㆍ안내가 어려운 사항에 대해서는 관련 유관기관 및 문의처 추가 안내<br/>
+const ManualPage = () => {
+    return (
+        <>
+        <br/>
+        <span className="big_title_text">1. 응대 시작</span><br></br>
+        <span className="color_green">✔ 첫인사</span><br/>
+        • 인사말, 성명 모두 정확한 발음으로 명확하고 친절하게 첫인사 전달<br/><br/>
+        • 부득이 전화 수신이 늦어질 경우 양해 안내<br/><br/>
+        <br></br>
 
-                    <span className="color_green">✔  정중한 태도</span><br/>
-                    •정중한 억양 및 어투를 사용하며, 시민의 상황에 맞는 억양과 어투 사용 <br/>
-                    •시민의 과도한 요구에도 개인의 감정 표현 자제 <br/>
-                    •지시형/명령형 어투를 사용하기보다, 권유형/청유형 어투를 사용하여 정중한 태도 유지 <br/>
-                    •대상을 특정하지 않는 습관성 반말투 사용 주의<br/>
+        <span className="big_title_text">2. 문의 탐색</span><br></br>
+        <span className="color_green">✔ 신속한 문의 파악</span><br/>
+        • 문의 사항을 집중하여 끝까지 듣고, 재 진술을 통한 정확한 니즈 파악 <br/><br/>
+        • 말 겹침 시 우선 듣기로 신속한 문의 파악 <br/><br/>
+        • 문의 사항을 속단하고 예측하여 문의 파악이 잘못 되지 않도록 주의 <br/><br/>
+        • 문의 내용을 파악하였다고 하여도 의도적으로 중간 개입하거나, 말 겹침이 일어나지 않도록 주의<br/><br/>
+        <br></br>
 
-                    <span className="color_green">✔ 경청 및 공감 </span> <br/>
-                    •시민이 제기하는 문제에 대해 함께 문제로 인식하는 태도 유지 <br/>
-                    •시민의 문의 사항에 대해 적절한 호응어 사용<br/>
-                    <br></br>
+        <span className="big_title_text">3. 상담 진행</span><br></br>
+        <span className="color_green">✔ 정확하고 이해하기 쉬운 설명</span><br/>
+        • 부서 전화번호, 이메일 등 메모가 필요한 사항을 안내할 때에는 분명한 발음으로 응대 <br/><br/>
+        • 담당 부서 연결이 필요할 때에는 사유 선 안내 후 연결 진행 <br/><br/>
+        • 즉시 처리ㆍ안내가 어려운 사항에 대해서는 관련 유관기관 및 문의처 추가 안내<br/><br></br>
 
-                    <span className="big_title_text">4. 종결</span><br></br>
-                    <span className="color_green">✔문제 해결 확인 및 끝인사 </span>  <br/>
-                    •시민의 문의 사항을 즉각적으로 해결치 못하는 경우 유감의 표현 사용 <br/>
-                    •시민의 상황에 맞는 공감의 인사말 사용 후 종결 <br/>
-            </>
-        )
-    }
+        <span className="color_green">✔  정중한 태도</span><br/>
+        • 정중한 억양 및 어투를 사용하며, 시민의 상황에 맞는 억양과 어투 사용 <br/><br/>
+        • 고객의 과도한 요구에도 개인의 감정 표현 자제 <br/><br/>
+        • 지시형/명령형 어투를 사용하기보다, 권유형/청유형 어투를 사용하여 정중한 태도 유지 <br/><br/>
+        • 대상을 특정하지 않는 습관성 반말투 사용 주의<br/><br></br>
+
+        <span className="color_green">✔ 경청 및 공감 </span> <br/>
+        • 고객이 제기하는 문제에 대해 함께 문제로 인식하는 태도 유지 <br/><br/>
+        • 고객의 문의 사항에 대해 적절한 호응어 사용<br/>
+        <br></br>
+
+        <span className="big_title_text">4. 종결</span><br></br>
+        <span className="color_green">✔문제 해결 확인 및 끝인사 </span>  <br/>
+        • 고객의 문의 사항을 즉각적으로 해결치 못하는 경우 유감의 표현 사용 <br/><br/>
+        • 고객의 상황에 맞는 공감의 인사말 사용 후 종결 <br/>
+        </>
+    )
 }
+
 const Createchat = ({type,message,time,emotion,question,answer}) => {
     const [facetype,setFaceType] = useState(faMeh);
     useEffect(()=> {
@@ -404,7 +398,6 @@ var userName;
 var userID;
 var userEmail;
 const CounselorMainPage = () => {
-    const [isPage,setPage] = useState(0);
     const location = useLocation();
     userName = location.state.Name;
     userID= location.state.Id;
@@ -478,12 +471,13 @@ const CounselorMainPage = () => {
             <div className="center_box">
                 <ModeChange/>
             </div>
-            <div className="right_bar_counselor_mainpage">
-                <p className="bigText" id="memo">
-                    MEMO
-                    <div></div>
-                    <ManualPage tt={isPage}/>
-                </p>
+            <div className="right_bar_counselor_mainpage_box">
+                <div className="right_bar_counselor_mainpage">
+                    <p className="bigText" id="memo">
+                        <p className="center_manual">기본 응대 매뉴얼</p>
+                    </p>
+                    <ManualPage/>
+                </div>
             </div>
         </div>
     );

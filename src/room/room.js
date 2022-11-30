@@ -20,7 +20,7 @@ var stun_config ={
             "urls": "stun:stun.l.google.com:19302"
         },
         {
-            "urls": "turn:211.202.222.162:8080",
+            "urls": "turn:211.202.222.162:3478",
             'credential' : '1234',
             'username' : 'admin'
         },

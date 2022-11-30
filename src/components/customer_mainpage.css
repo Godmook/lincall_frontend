@@ -242,7 +242,7 @@ input:focus {
     grid-auto-flow:row;
     overflow: scroll;
     grid-auto-rows: 50%;
-  }
+}
 .center_box {
     display: flex;
     width: 50%;

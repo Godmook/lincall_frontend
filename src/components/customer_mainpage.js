@@ -87,16 +87,30 @@ const CreatechatClient = ({
         )
     }
 }
-var stun_config = {
+var stun_config ={
     'iceServers': [
         {
             "urls": "stun:stun.l.google.com:19302"
         },
         {
+            "urls": "turn:211.202.222.162:3478",
+            'credential' : '1234',
+            'username' : 'admin'
+        },
+        {
+            "urls": "turn:211.202.222.162:8080?transport=tcp",
+            'credential' : '1234',
+            'username' : 'admin'
+        },
+        {
+            "urls": "turn:211.202.222.162:8080?transport=udp",
+            'credential' : '1234',
+            'username' : 'admin'
+        },
+        {
             "urls": "stun1:stun.l.google.com:19302"
         },
     ]
-
 }
 const CurrentState = ({text}) => {
     return text;
@@ -447,11 +461,6 @@ const CustomerMainPage = () => {
                     var stomp = Stomp.over(socket);
                     pc.onicecandidate = handlerIceCandidate;
                     pc.addEventListener("icecandidate", handlerIceCandidate);
-                    pc.addEventListener('track', async (event) => {
-                        const [remoteStream] = event.streams;
-                        remoteVideo.srcObject = remoteStream;
-                        console.log(remoteVideo.srcObject)
-                    })
                     pc.addEventListener("connectionstatechange", (event) => {
                         if (pc.iceConnectionState == "connected") {
                             document.getElementById('aaaabbb').style.color="#fc2803";
